@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 
+import { Button, ButtonGroup, Heading } from '@chakra-ui/react';
+
 function App() {
   return (
     <div className='App'>
@@ -10,7 +12,8 @@ function App() {
           className='App-logo'
           alt='logo'
         />
-        <p>Let's build Company Queue! 🔥</p>
+        <Heading>Let's build Company Queue! 🔥</Heading>
+        <Button>Hi</Button>
       </header>
     </div>
   );
