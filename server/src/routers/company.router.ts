@@ -1,7 +1,12 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-import { getCompanies } from '../controllers/company.controller';
+import {
+  getCompanies,
+  getCompanyByName,
+} from "../controllers/company.controller";
 
 export const companyRouter = Router();
 
-companyRouter.get('/', getCompanies);
+companyRouter.get("/", getCompanies);
+
+companyRouter.get("/name", getCompanyByName);

@@ -1,7 +1,7 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 // Interface representing the Company document
-export interface ICompany extends Document {
+export interface Company {
   name: string;
   booth: string;
   companyLines: {
@@ -23,4 +23,4 @@ const CompanySchema: Schema = new Schema({
 });
 
 // Create and export the Company model
-export default mongoose.model<ICompany>('Company', CompanySchema);
+export default mongoose.model<Company>("Company", CompanySchema);
