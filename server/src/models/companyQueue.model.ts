@@ -4,11 +4,12 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface CompanyQueue {
   companyName: string;
   companyBooth: string;
-  companyLineNumber: number;
+  lineNumber: number;
+  majors: string[];
   studentsInLine: {
     phoneNumber: number;
-    majors: string;
-    checkOutId: number;
+    major: string;
+    ticketNumber: string;
     index: number;
   }[];
 }
@@ -17,12 +18,13 @@ export interface CompanyQueue {
 const CompanyQueueSchema: Schema = new Schema({
   companyName: { type: String, required: true },
   companyBooth: { type: String, required: true },
-  companyLineNumber: { type: Number, required: true },
+  lineNumber: { type: Number, required: true },
+  majors: {type: [String], required: true},
   studentsInLine: [
     {
       phoneNumber: { type: Number, required: true },
       major: { type: String, required: true },
-      checkOutId: { type: Number, required: true },
+      ticketNumber: { type: String, required: true },
       index: { type: Number, required: true },
     },
   ],

@@ -23,4 +23,4 @@ const CompanySchema: Schema = new Schema({
 });
 
 // Create and export the Company model
-export default mongoose.model<Company>("Company", CompanySchema);
+export const companyModel = mongoose.model<Company>("Company", CompanySchema);
