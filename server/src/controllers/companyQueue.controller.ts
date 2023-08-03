@@ -9,10 +9,19 @@ export const joinQueue = async (req: Request, res: Response) => {
   if (typeof major != "string") {
     return res.send("Major is invalid");
   }
+
+  //remove all hyphens, spaces, and parenthesis from the phone number
+  const updatedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
+
   //get companyLines for company
   const companyQueues = await companyQueueModel.find({
     companyName: companyName,
   });
+
+  // Check if companyQueues is empty
+  if (companyQueues.length === 0) {
+    return res.send("Company is not valid or has no queues.");
+  }
 
   //decide which line to put student in
   const correctQueue = companyQueues.find((queue) => {
@@ -23,6 +32,13 @@ export const joinQueue = async (req: Request, res: Response) => {
     return res.send("Major not found");
   }
 
+  // Check if student is already in queue
+  for(let i = 0; i < correctQueue.studentsInLine.length; ++i){
+    if (parseInt(updatedPhoneNumber) === correctQueue.studentsInLine[i].phoneNumber){
+      return res.send("Student is already in queue");
+    }
+  }
+
   //get index of last person in line
   const studentsInLine = correctQueue.studentsInLine.sort(
     (student1, student2) => {
@@ -30,13 +46,23 @@ export const joinQueue = async (req: Request, res: Response) => {
     }
   );
 
-  const lastStudentIndex = studentsInLine[0].index + 1;
+  //If first person in line, then give them 0
+  const lastStudentIndex = studentsInLine?.[0]?.index + 1 || 100;
+
+  //Assign student a unique ticket number
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let ticketNumber = "";
+
+  for (let i = 0; i < 3; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    ticketNumber += characters.charAt(randomIndex);
+  }
 
   const newStudent = {
     _id: new mongoose.Types.ObjectId(),
-    phoneNumber: parseInt(phoneNumber as string),
+    phoneNumber: parseInt(updatedPhoneNumber as string),
     major: major,
-    ticketNumber: "A5",
+    ticketNumber: ticketNumber,
     index: lastStudentIndex,
   };
 
@@ -46,9 +72,6 @@ export const joinQueue = async (req: Request, res: Response) => {
     ...correctQueue,
     studentsInLine: updatedLine,
   };
-
-  //add them to queue
-  // await companyQueueModel.findByIdAndUpdate(correctQueue._id, updatedQueue);
 
   //update the queue
   await companyQueueModel.findOneAndUpdate(
@@ -122,8 +145,25 @@ export const notifyNext = async (req: Request, res: Response) => {
     studentsToNotify.push(studentsInLine[i].phoneNumber);
   }
 
-  res.send(studentsToNotify);
+  console.log(studentsToNotify)
 
-  //text 5 students
-  //Deal with texting them later
+  // const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  // const authToken = process.env.TWILIO_AUTH_TOKEN;
+
+  // const accountSid = "ACf3619a02abe3e565809b1b6ad97e9cfb";
+  // const authToken = "6a06d1074d18eaec38a4d592cac415c2";
+  // const client = require("twilio")(accountSid, authToken);
+
+  // var numbersToMessage = ["+15122025107", "+15126219469", "+15127961325"];
+
+  // numbersToMessage.forEach(function (number) {
+  //   var message = client.messages
+  //     .create({
+  //       body: "Hola coma estas senor :)",
+  //       from: "+18662936588",
+  //       to: number,
+  //     })
+  //     .then((message: { status: string }) => console.log(message.status))
+  //     .catch((error: any) => console.error(error));
+  // });
 };
