@@ -1,122 +1,105 @@
 import { Request, Response } from "express";
-import companyQueueModel, { CompanyQueue } from "../models/companyQueue.model";
-import mongoose from "mongoose";
+import companyQueueModel from "../models/companyQueue.model";
+
+import { getRandomTicketNumber } from "../utils";
 
 export const joinQueue = async (req: Request, res: Response) => {
   const { companyName, major, phoneNumber } = req.query;
-  // const companyName = req.query.companyName;
 
   if (typeof major != "string") {
     return res.send("Major is invalid");
   }
 
-  //remove all hyphens, spaces, and parenthesis from the phone number
-  const updatedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
+  // remove all hyphens, spaces, and parenthesis from the phone number
+  const cleanedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
 
-  //get companyLines for company
+  // get companyLines for company
   const companyQueues = await companyQueueModel.find({
     companyName: companyName,
   });
 
-  // Check if companyQueues is empty
+  // check if companyQueues is empty
   if (companyQueues.length === 0) {
     return res.send("Company is not valid or has no queues.");
   }
 
-  //decide which line to put student in
-  const correctQueue = companyQueues.find((queue) => {
-    return queue.majors.includes(major);
-  });
+  // decide which line to put student in
+  const correctQueue = companyQueues.find(queue =>
+    queue.majors.includes(major)
+  );
 
   if (correctQueue == undefined) {
     return res.send("Major not found");
   }
 
-  // Check if student is already in queue
-  for(let i = 0; i < correctQueue.studentsInLine.length; ++i){
-    if (parseInt(updatedPhoneNumber) === correctQueue.studentsInLine[i].phoneNumber){
-      return res.send("Student is already in queue");
-    }
-  }
-
-  //get index of last person in line
-  const studentsInLine = correctQueue.studentsInLine.sort(
-    (student1, student2) => {
-      return student2.index - student1.index;
-    }
+  // check if student is already in queue
+  const studentAlreadyInQueue = correctQueue.studentsInLine.find(
+    student => student.phoneNumber === parseInt(cleanedPhoneNumber as string)
   );
 
-  //If first person in line, then give them 0
-  const lastStudentIndex = studentsInLine?.[0]?.index + 1 || 100;
-
-  //Assign student a unique ticket number
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let ticketNumber = "";
-
-  for (let i = 0; i < 3; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    ticketNumber += characters.charAt(randomIndex);
+  if (studentAlreadyInQueue) {
+    return res.send("Student already in queue");
   }
 
-  const newStudent = {
-    _id: new mongoose.Types.ObjectId(),
-    phoneNumber: parseInt(updatedPhoneNumber as string),
-    major: major,
-    ticketNumber: ticketNumber,
-    index: lastStudentIndex,
-  };
+  // get index for student
+  let newStudentIndex = 1;
+  if (correctQueue.studentsInLine.length !== 0) {
+    const studentWithHighestIndex = correctQueue.studentsInLine.reduce(
+      (student1, student2) => {
+        return student1.index > student2.index ? student1 : student2;
+      }
+    );
 
-  const updatedLine = [...studentsInLine, newStudent];
+    newStudentIndex = studentWithHighestIndex.index + 1;
+  }
 
-  const updatedQueue = {
-    ...correctQueue,
-    studentsInLine: updatedLine,
-  };
+  // assign student a unique ticket number
+  const ticketNumber = getRandomTicketNumber();
 
-  //update the queue
-  await companyQueueModel.findOneAndUpdate(
-    { _id: correctQueue._id },
-    { $set: { studentsInLine: updatedLine } }
+  // add student to queue and update mongodb
+  const updatedQueue = await companyQueueModel.findOneAndUpdate(
+    {
+      companyName: companyName,
+      lineNumber: correctQueue.lineNumber,
+    },
+    {
+      $push: {
+        studentsInLine: {
+          phoneNumber: parseInt(cleanedPhoneNumber as string),
+          ticketNumber: ticketNumber,
+          index: newStudentIndex,
+        },
+      },
+    },
+    { new: true }
   );
 
-  return res.json(updatedQueue.studentsInLine);
+  return res.json(updatedQueue?.studentsInLine);
 };
 
 export const leaveQueue = async (req: Request, res: Response) => {
   const ticketNumber = req.query.ticketNumber;
 
-  //get company, line, and student from ticketNumber
-  // const companyQueue = await companyQueueModel.find({
-  //   ticketNumber: ticketNumber,
-  // });
-
   const companyQueue = await companyQueueModel.findOne({
     "studentsInLine.ticketNumber": ticketNumber,
   });
 
+  // If the company queue is not found, the student is not in any company queue
   if (!companyQueue) {
-    // If the company queue is not found, the student is not in any company queue
     return res
       .status(404)
       .json({ message: "Student not found in any company queue." });
   }
 
   const studentIndex = companyQueue.studentsInLine.findIndex(
-    (student) => student.ticketNumber === ticketNumber
+    student => student.ticketNumber === ticketNumber
   );
 
-  if (studentIndex === -1) {
-    // If the student is not found in the company queue, return an error
-    return res
-      .status(404)
-      .json({ message: "Student not found in the company queue." });
-  }
-  //remove student
+  // remove student
   companyQueue.studentsInLine.splice(studentIndex, 1);
 
   await companyQueue.save();
 
-  // return res.json({ message: "Student removed from the company queue." });
   return res.json(companyQueue.studentsInLine);
 };
 
@@ -132,7 +115,7 @@ export const notifyNext = async (req: Request, res: Response) => {
     lineNumber: lineNumber,
   });
 
-  //get next 5 students in line
+  // get next 5 students in line
   const studentsInLine = correctQueue[0].studentsInLine.sort(
     (student1, student2) => {
       return student1.index - student2.index;
@@ -145,7 +128,7 @@ export const notifyNext = async (req: Request, res: Response) => {
     studentsToNotify.push(studentsInLine[i].phoneNumber);
   }
 
-  console.log(studentsToNotify)
+  res.json(studentsToNotify);
 
   // const accountSid = process.env.TWILIO_ACCOUNT_SID;
   // const authToken = process.env.TWILIO_AUTH_TOKEN;

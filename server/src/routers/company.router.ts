@@ -18,4 +18,4 @@ companyRouter.post("/", addCompany);
 
 companyRouter.put("/:companyId", updateCompany);
 
-companyRouter.get("/id/:companyId", getCompanyById)
+companyRouter.get("/id/:companyId", getCompanyById);

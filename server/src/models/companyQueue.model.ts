@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 // Interface representing the Company document
 export interface CompanyQueue {
@@ -19,7 +19,7 @@ const CompanyQueueSchema: Schema = new Schema({
   companyName: { type: String, required: true },
   companyBooth: { type: String, required: true },
   lineNumber: { type: Number, required: true },
-  majors: {type: [String], required: true},
+  majors: { type: [String], required: true },
   studentsInLine: [
     {
       phoneNumber: { type: Number, required: true },

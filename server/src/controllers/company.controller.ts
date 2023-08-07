@@ -16,29 +16,27 @@ export const getCompanyByName = async (req: Request, res: Response) => {
 };
 
 export const addCompany = async (req: Request, res: Response) => {
-
   try {
-      const companyData = req.body as Company;
-      
-      const newCompany = await companyModel.create(companyData);
-  
-      res.status(201).json(newCompany);
-    } catch (error) {
-      // Handle any errors that occur during the process
-      console.error("Error:", error);
-      res.status(500).json({ error: "An error occurred" });
-    }
+    const companyData = req.body as Company;
+
+    const newCompany = await companyModel.create(companyData);
+
+    res.status(201).json(newCompany);
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
 };
 
 export const updateCompany = async (req: Request, res: Response) => {
   try {
     const companyId = req.params.companyId;
-    const updateData = req.body;
+    const updatedCompanyData = req.body;
 
     // Find the company by ID and update its properties
     const updatedCompany = await companyModel.findByIdAndUpdate(
       companyId,
-      updateData,
+      updatedCompanyData,
       { new: true, runValidators: true }
     );
 
@@ -46,7 +44,6 @@ export const updateCompany = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Company not found" });
     }
 
-    // Send a success response
     res.json(updatedCompany);
   } catch (error) {
     console.error("Error:", error);
@@ -61,5 +58,3 @@ export const getCompanyById = async (req: Request, res: Response) => {
 
   res.json(company);
 };
-
-
