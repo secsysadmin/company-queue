@@ -125,7 +125,10 @@ export const notifyNext = async (req: Request, res: Response) => {
   let studentsToNotify = [];
 
   for (let i = 0; i < Math.min(5, studentsInLine.length); i++) {
-    studentsToNotify.push(studentsInLine[i].phoneNumber);
+    if (studentsInLine[i].contacted == false) {
+      studentsInLine[i].contacted = true;
+      studentsToNotify.push(studentsInLine[i].phoneNumber);
+    }
   }
 
   res.json(studentsToNotify);
