@@ -11,6 +11,7 @@ export interface CompanyQueue {
     major: string;
     ticketNumber: string;
     index: number;
+    contacted: boolean;
   }[];
 }
 
@@ -26,6 +27,7 @@ const CompanyQueueSchema: Schema = new Schema({
       major: { type: String, required: true },
       ticketNumber: { type: String, required: true },
       index: { type: Number, required: true },
+      contacted: { type: Boolean, required: true },
     },
   ],
 });
