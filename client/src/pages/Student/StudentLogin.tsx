@@ -1,4 +1,7 @@
+import Banner from "../../components/Banner";
 
 export default function StudentLogin() {
-    return <></>
+    return (<>
+        <Banner title="Queue Login"></Banner>
+    </>);
 }
