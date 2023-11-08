@@ -9,7 +9,29 @@ export default function StudentLogin() {
             <div style={loginFormStyle}>
                 <Input style={{marginBottom: '1em'}} placeholder="Phone Number" variant='filled'></Input>
                 <Select placeholder='Major' variant='filled' style={{marginBottom: '1em'}}>
-                    <option value="CSCE">CSCE</option>  
+                    <option value="AERO">AERO</option>
+                    <option value="AREN">CSCE</option>          
+                    <option value="BAEN">BAEN</option>
+                    <option value="BMEN">BMEN</option>
+                    <option value="CHEN">CHEN</option>
+                    <option value="CVEN">CVEN</option>          
+                    <option value="CSCE">CSCE</option>
+                    <option value="CPEN">CPEN</option>
+                    <option value="ECEN">ECEN</option>     
+                    <option value="EVEN">EVEN</option>
+                    <option value="ESET">ESET</option>
+                    <option value="ISEN">ISEN</option>  
+                    <option value="IDIS">IDIS</option>
+                    <option value="MSEN">MSEN</option>
+                    <option value="MEEN">MEEN</option>
+                    <option value="NUEN">NUEN</option>    
+                    <option value="OCEN">OCEN</option>
+                    <option value="PETE">PETE</option>
+                    {/* These disabled options exist so someone can scroll 
+                    to the bottom of the list without it cuttign off*/}
+                    <option disabled={true} value="NO"></option>
+                    <option disabled={true} value="NO"></option>
+                    <option disabled={true} value="NO"></option>          
                 </Select>
                 <Button backgroundColor='red.900' color='white'>Join Queue</Button>
             </div>
