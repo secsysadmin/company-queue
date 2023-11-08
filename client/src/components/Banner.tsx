@@ -9,6 +9,11 @@ const BannerStyle = {
     fontSize: '2em'
 };
 
+const logoStyle = {
+    maxWidth: '20vw',
+    width: 'max(10vw, 10%)',
+}
+
 interface BannerProps {
     title: string;
 }
@@ -16,6 +21,7 @@ interface BannerProps {
 export default function Banner(props: BannerProps) {
     return (<>
         <div style={BannerStyle}>
+            <img style={logoStyle} src="../../public/media/secbasic.png" alt="SEC Logo"/>
             <h1>{props.title}</h1>
         </div>
     </>);
