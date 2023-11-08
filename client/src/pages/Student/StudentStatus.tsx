@@ -2,6 +2,8 @@ import { Stack, Card, CardBody, CardHeader, Text, Heading, Button } from "@chakr
 import Banner from "../../components/Banner";
 
 export default function StudentStatus() {
+
+
     const company = "Tesla";
     return (<>
         <Banner title='Company Queue'></Banner>
@@ -24,10 +26,14 @@ export default function StudentStatus() {
                     </Stack>
                 </CardBody>
             </Card>
-            <Button backgroundColor={'red.900'} color={'white'}>Leave Queue</Button>
+            <Button onClick={(ev) => leaveQueue} backgroundColor={'red.900'} color={'white'}>Leave Queue</Button>
         </Stack>
         </div>
     </>);
+}
+
+function leaveQueue(phoneNumber: string){
+
 }
 
 const statusDivStyle = {
