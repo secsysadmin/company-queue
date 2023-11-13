@@ -1,27 +1,22 @@
+import { Stack, Heading, Table, Thead, Tbody, Tr, Th, TableContainer, Card, CardHeader, CardBody, Button } from "@chakra-ui/react";
 import Banner from "../../components/Banner";
-import {
-  Stack,
-  Heading,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Card,
-  CardHeader,
-  CardBody,
-  Button
-} from "@chakra-ui/react";
+import QueueStudent from "../../components/QueueStudent"; // Import the QueueStudent component
 
 const tableCellStyle = {
   padding: '8px',
   margin: '0',
 };
 
-export default function RecruiterDashboard() {
+export default function CompanyQueuePage() {
   const company = "Tesla";
+
+  // Define an array of students
+  const students = [
+    { number: 1, major: 'CPSC', name: 'John Smith' },
+    { number: 2, major: 'MEEN', name: 'Allie Grater' },
+    { number: 3, major: 'ELEN', name: 'Gene Eva Convenshun' },
+  ];
+
   return (
     <>
       <Banner title='Company Queue for Recruiters'></Banner>
@@ -50,24 +45,15 @@ export default function RecruiterDashboard() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    <Tr>
-                      <Td style={tableCellStyle}>1</Td>
-                      <Td style={tableCellStyle}>CPSC</Td>
-                      <Td style={tableCellStyle}>John Smith</Td>
-                      <Td style={tableCellStyle}><Button colorScheme='red' size='sm'>Remove</Button></Td>
-                    </Tr>
-                    <Tr>
-                      <Td style={tableCellStyle}>2</Td>
-                      <Td style={tableCellStyle}>MEEN</Td>
-                      <Td style={tableCellStyle}>Allie Grater</Td>
-                      <Td style={tableCellStyle}><Button colorScheme='red' size='sm'>Remove</Button></Td>
-                    </Tr>
-                    <Tr>
-                      <Td style={tableCellStyle}>3</Td>
-                      <Td style={tableCellStyle}>ELEN</Td>
-                      <Td style={tableCellStyle}>Gene Eva Convenshun</Td>
-                      <Td style={tableCellStyle}><Button colorScheme='red' size='sm'>Remove</Button></Td>
-                    </Tr>
+                    {students.map((student, index) => (
+                      <QueueStudent
+                        key={index}
+                        number={student.number}
+                        major={student.major}
+                        name={student.name}
+                        onRemoveClick={() => handleRemoveStudent(student.number)}
+                      />
+                    ))}
                   </Tbody>
                 </Table>
               </TableContainer>
@@ -85,3 +71,8 @@ const statusDivStyle = {
   flexDirection: 'column',
   alignItems: 'center',
 };
+
+// Define a function to handle student removal
+function handleRemoveStudent(studentNumber: number) {
+  // Implement student removal logic here
+}
