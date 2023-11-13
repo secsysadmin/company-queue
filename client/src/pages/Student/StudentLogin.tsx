@@ -1,13 +1,24 @@
 import Banner from "../../components/Banner";
 import { Input, Select, Button, Stack } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function StudentLogin() {
     const [major, setMajor] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [canSubmit, setCanSubmit] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const searchParams = new URLSearchParams(location.search);
+    const company = searchParams.get("company");
+
+    useEffect(() => {
+        console.log(location.search)
+        if (!company) {
+            navigate('/404');
+        }
+    }, [location, searchParams, company])
 
     useEffect(() => {
         setCanSubmit(isValidPhone(phoneNumber) && !!major);
