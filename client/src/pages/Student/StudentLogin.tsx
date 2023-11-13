@@ -2,6 +2,7 @@ import Banner from "../../components/Banner";
 import { Input, Select, Button, Stack } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
+import { SERVER_ENDPOINT } from "../../utils/server";
 
 export default function StudentLogin() {
     const [major, setMajor] = useState("");
@@ -18,11 +19,22 @@ export default function StudentLogin() {
         if (!company) {
             navigate('/404');
         }
-    }, [location, searchParams, company])
+    }, [location, searchParams, company]);
 
     useEffect(() => {
         setCanSubmit(isValidPhone(phoneNumber) && !!major);
     }, [major, phoneNumber]);
+
+
+    // call login on backend 
+    async function joinQueue(phoneNumber: string, major: string, companyName: string) {
+        const url = `${SERVER_ENDPOINT}/api/company-queue/join?companyName=${companyName}&phoneNumber=${phoneNumber}&major=${major}`;
+        fetch(url, { method: 'POST' }).then((response) => {
+            console.log(response);
+        }).catch((reason) => {
+            console.error(reason);
+        });
+    }
 
     return (
         <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center' }}>
@@ -54,7 +66,7 @@ export default function StudentLogin() {
                     <option disabled={true} value="NO"></option>
                     <option disabled={true} value="NO"></option>
                 </Select>
-                <Button isDisabled={!canSubmit} backgroundColor='red.900' color='white'>Join Queue</Button>
+                <Button onClick={(ev) => joinQueue(phoneNumber, major, company!)} isDisabled={!canSubmit} backgroundColor='red.900' color='white'>Join Queue</Button>
             </Stack>
         </div>
     );
