@@ -1,11 +1,13 @@
 import Banner from "../../components/Banner";
 import { Input, Select, Button, Stack } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
+import { useLocation } from "react-router-dom";
 
 export default function StudentLogin() {
     const [major, setMajor] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [canSubmit, setCanSubmit] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         setCanSubmit(isValidPhone(phoneNumber) && !!major);
