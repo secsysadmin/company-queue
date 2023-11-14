@@ -1,8 +1,7 @@
 import Banner from "../../components/Banner";
 import { Stack, Input, Button, Text } from '@chakra-ui/react';
 import { useEffect, useState } from "react";
-
-const PIN_LENGTH = 6;
+import { PIN_LENGTH } from "../../utils/consts";
 
 export default function RecruiterLogin() {
     const [canSubmit, setCanSubmit] = useState(false);

@@ -2,7 +2,7 @@ import Banner from "../../components/Banner";
 import { Input, Select, Button, Stack } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
-import { SERVER_ENDPOINT } from "../../utils/server";
+import { SERVER_ENDPOINT } from "../../utils/consts";
 
 export default function StudentLogin() {
     const [major, setMajor] = useState("");
