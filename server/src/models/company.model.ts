@@ -5,10 +5,7 @@ export interface Company {
   name: string;
   pin: string;
   booth: string;
-  companyLines: {
-    lineNumber: number;
-    majors: string[];
-  }[];
+
 }
 
 // Define the Company schema
@@ -16,12 +13,6 @@ const CompanySchema: Schema = new Schema({
   name: { type: String, required: true },
   pin: {type: String, required: true},
   booth: { type: String, required: true },
-  companyLines: [
-    {
-      lineNumber: { type: Number, required: true },
-      majors: { type: [String], required: true },
-    },
-  ],
 });
 
 // Create and export the Company model
