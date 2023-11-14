@@ -16,3 +16,5 @@ companyQueueRouter.delete("/leave", leaveQueue);
 companyQueueRouter.delete("/mark-as-spoken-to", spokenTo);
 
 companyQueueRouter.post("/notify-next", notifyNext);
+
+companyQueueRouter.post("create-queue", )

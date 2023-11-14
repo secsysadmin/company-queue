@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import companyQueueModel from "../models/companyQueue.model";
+import companyQueueModel, { CompanyQueue } from "../models/companyQueue.model";
 
-import { getRandomTicketNumber } from "../utils";
+import { ADMIN_PIN, findHighestLineNumber, getRandomTicketNumber } from "../utils";
 
 export const joinQueue = async (req: Request, res: Response) => {
   const { companyName, major, phoneNumber } = req.query;
@@ -153,3 +153,26 @@ export const notifyNext = async (req: Request, res: Response) => {
   //     .catch((error: any) => console.error(error));
   // });
 };
+
+export const createQueue = async (req: Request, res: Response) => {
+    const {adminPin, companyName, majors} = req.query;
+    if(adminPin != ADMIN_PIN){
+        res.status(400).json('invalid admin request').send();
+    }
+    const newLineNumber = await findHighestLineNumber(String(companyName)) + 1;
+
+    const majorsList = String(majors).split(',');
+    
+    const newQueue = new companyQueueModel( {
+        companyName: String(companyName),
+        lineNumber: newLineNumber,
+        majors: majorsList,
+        studentsInLine: []
+    });
+    newQueue.save().then(()=>
+        res.status(200).send()
+    ).catch(() => res.status(401).json('failed to save queue to database').send());
+
+
+
+}  
