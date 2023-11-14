@@ -3,7 +3,6 @@ import mongoose, { Schema } from "mongoose";
 // Interface representing the Company document
 export interface CompanyQueue {
   companyName: string;
-  companyBooth: string;
   lineNumber: number;
   majors: string[];
   studentsInLine: {
@@ -18,7 +17,6 @@ export interface CompanyQueue {
 // Define the Company schema
 const CompanyQueueSchema: Schema = new Schema({
   companyName: { type: String, required: true },
-  companyBooth: { type: String, required: true },
   lineNumber: { type: Number, required: true },
   majors: { type: [String], required: true },
   studentsInLine: [
