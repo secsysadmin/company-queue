@@ -1,30 +1,29 @@
-import { Card, CardHeader, Stack, Heading, CardBody, Input, Button } from "@chakra-ui/react";
 import Banner from "../../components/Banner";
+import { Stack, Input, Button, Text } from '@chakra-ui/react';
+import { useEffect, useState } from "react";
+import { PIN_LENGTH } from "../../utils/consts";
 
 export default function RecruiterLogin() {
+    const [canSubmit, setCanSubmit] = useState(false);
+    const [pin, setPin] = useState('');
+
+    useEffect(() => {
+        if(pin.length == PIN_LENGTH){
+            setCanSubmit(true);
+        }
+        else{
+            setCanSubmit(false);           
+        }
+    }, [pin]);
+
     return <>
-        <Banner title='Recruiter Login'></Banner>
-        {/*@ts-ignore */}
-        <div style={loginDiv}>
-            <Card>
-                <CardHeader>
-                    <Heading size={'lg'}>Enter Company Pin</Heading>
-                </CardHeader>
-                <CardBody>
-                    <Stack>
-                        <Input placeholder="PIN (ex: 123456)"></Input>
-                        <Button backgroundColor={'red.900'} color={'white'}>Login</Button>
-                    </Stack>
-                </CardBody>
-            </Card>
+        <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center', minWidth:'50vw' }}>
+            <Banner title='Recruiter Login'></Banner>
+            <Stack minWidth='30vw'>
+                <Text marginTop='3em'>Enter Your Company Queue Pin</Text>
+                <Input variant='filled' placeholder="Pin" onChange={(ev) => setPin(ev.target.value)}></Input>
+                <Button isDisabled={!canSubmit} backgroundColor='red.900' color='white'>Login</Button>
+            </Stack>
         </div>
     </>;
-}
-
-
-const loginDiv = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    marginTop: '3em',
 }

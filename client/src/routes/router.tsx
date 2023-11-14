@@ -5,18 +5,20 @@ import RecruiterDashboard from "../pages/Recruiter/RecruiterDashboard";
 import ErrorPage from "../pages/ErrorPage";
 import StudentLogin from "../pages/Student/StudentLogin";
 import StudentStatus from "../pages/Student/StudentStatus";
+import Admin from "../pages/Admin/Admin";
 
 
 export const router = createBrowserRouter(createRoutesFromElements(
-    <Route path="/" errorElement={<ErrorPage/>}>
+    <Route path="/" errorElement={<ErrorPage />}>
         <Route path="recruiter">
-            <Route path="login" element={<RecruiterLogin/>}></Route>
-            <Route path="queue" element={<CompanyQueuePage/>}></Route>
-            <Route path="dashboard" element={<RecruiterDashboard/>}></Route>
+            <Route path="login" element={<RecruiterLogin />}></Route>
+            <Route path="queue" element={<CompanyQueuePage />}></Route>
+            <Route path="dashboard" element={<RecruiterDashboard />}></Route>
         </Route>
         <Route path="student">
-            <Route path='login' element={<StudentLogin/>}></Route>
-            <Route path='status' element={<StudentStatus/>}></Route>
-        </Route>  
+            <Route path='login' element={<StudentLogin />}></Route>
+            <Route path='status' element={<StudentStatus />}></Route>
+        </Route>
+        <Route path="admin" element={<Admin />} />
     </Route>
 ));
