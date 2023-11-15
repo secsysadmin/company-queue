@@ -27,6 +27,9 @@ export default function NewCompany() {
         };
         const response = await fetch(url, {
             method: 'POST',
+            headers: {
+                "Content-type": "application/json"
+            },
             body: JSON.stringify(body)
         });
         console.log(response.json());
