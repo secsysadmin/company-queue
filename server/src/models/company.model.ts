@@ -5,7 +5,6 @@ export interface Company {
   name: string;
   pin: string;
   booth: string;
-
 }
 
 // Define the Company schema
