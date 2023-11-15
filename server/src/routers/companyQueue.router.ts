@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import {
+  createQueue,
   joinQueue,
   leaveQueue,
   notifyNext,
@@ -17,4 +18,4 @@ companyQueueRouter.delete("/mark-as-spoken-to", spokenTo);
 
 companyQueueRouter.post("/notify-next", notifyNext);
 
-companyQueueRouter.post("create-queue", )
+companyQueueRouter.post("/create-queue", createQueue);
