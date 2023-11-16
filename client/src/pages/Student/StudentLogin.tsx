@@ -1,5 +1,5 @@
 import Banner from "../../components/Banner";
-import { Input, Select, Button, Stack } from '@chakra-ui/react';
+import { Input, Select, Button, Stack, Text } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from "react-router-dom";
 import { SERVER_ENDPOINT } from "../../utils/consts";
@@ -40,6 +40,7 @@ export default function StudentLogin() {
         <div style={{ display: "flex", flexDirection: 'column', alignItems: 'center' }}>
             <Banner title="Queue Login"></Banner>
             <Stack marginTop='2em' spacing={3}>
+                <Text fontSize='xl'>Login to {company}'s queue</Text>
                 <Input placeholder="Phone Number" variant='filled' onChange={(ev) => setPhoneNumber(ev.target.value)}></Input>
                 <Select placeholder='Major' variant='filled' onChange={(ev) => setMajor(ev.target.value)}>
                     <option value="AERO">AERO</option>
