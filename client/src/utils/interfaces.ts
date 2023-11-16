@@ -2,10 +2,6 @@ export interface Company {
     name: string;
     pin: string;
     booth: string;
-    companyLines: {
-      lineNumber: number;
-      majors: string[];
-    }[];
   }
 
   export interface CompanyQueue {

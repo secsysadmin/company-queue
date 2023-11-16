@@ -1,55 +1,58 @@
-import { Card, Text, Input, Button, Stack, CardHeader, Select, Checkbox, CheckboxGroup } from "@chakra-ui/react";
+import { Card, Text, Input, Button, Stack, CardHeader, Select, Checkbox } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
+interface NewQueueProps {
+    companyNames?: string[];
+}
 
-export default function newQueue() {
-    const [companyName, setCompanyName] = useState(String);
-    const [major, setMajor] = useState(String);
+export default function NewQueue(props: NewQueueProps) {
+    const [companyName, setCompanyName] = useState('');
+    const [majors, setMajors] = useState<string[]>([]);
     const [canSubmit, setCanSubmit] = useState(false);
 
+    const majorOptions = ["AERO", "AREN", "BAEN", "BMEN", "CHEN", "CVEN", "CSCE", "CPEN", "ECEN", "EVEN", "ESET", "ISEN", "IDIS", "MSEN", "MEEN", "NUEN", "OCEN", "PETE"];
+
     useEffect(() => {
-        if (companyName.length) {
-            setCanSubmit(true);
+        setCanSubmit(companyName.length > 0 && majors.length > 0);
+    }, [companyName]);
+
+    const handleMajorChange = (checked: boolean, major: string) => {
+        if (checked) {
+            setMajors(prevMajors => [...prevMajors, major]);
+        } else {
+            setMajors(prevMajors => prevMajors.filter(m => m !== major));
         }
-        else {
-            setCanSubmit(false);
-        }
+    }
 
-    }, [companyName, major])
+    return (
+        <div>
+            <Card>
+                <CardHeader>
+                    <Text size={'lg'}>Add a new queue</Text>
+                </CardHeader>
+                <Stack>
+                    <Select placeholder="Company Name" onChange={(ev) => setCompanyName(ev.target.value)}>
+                        {/* Add options for company names here */}
+                        {
+                            props.companyNames?.map((company, index) => (
+                                <option value={company} key={index}>{company}</option>
+                            ))
+                        }
+                    </Select>
 
+                    {majorOptions.map((major, index) => (
+                        <Checkbox
+                            key={index}
+                            value={major}
+                            onChange={(e) => handleMajorChange(e.target.checked, major)}
+                        >
+                            {major}
+                        </Checkbox>
+                    ))}
 
-    return (<div>
-        <Card>
-            <CardHeader>
-                <Text size={'lg'}>Add a new queue</Text>
-            </CardHeader>
-            <Stack>
-                <Select placeholder="Company Name" onChange={(ev) => setCompanyName(ev.target.value)}>
-                    
-                </Select>
-
-                <Checkbox>All Majors</Checkbox>
-                <Checkbox>AERO</Checkbox>
-                <Checkbox>AREN</Checkbox>
-                <Checkbox>BAEN</Checkbox>
-                <Checkbox>BMEN</Checkbox>
-                <Checkbox>CHEN</Checkbox>
-                <Checkbox>CVEN</Checkbox>
-                <Checkbox>CSCE</Checkbox>
-                <Checkbox>CPEN</Checkbox>
-                <Checkbox>ECEN</Checkbox>
-                <Checkbox>EVEN</Checkbox>
-                <Checkbox>ESET</Checkbox>
-                <Checkbox>ISEN</Checkbox>
-                <Checkbox>IDIS</Checkbox>
-                <Checkbox>MSEN</Checkbox>
-                <Checkbox>MEEN</Checkbox>
-                <Checkbox>NUEN</Checkbox>
-                <Checkbox>OCEN</Checkbox>
-                <Checkbox>PETE</Checkbox>
-
-                <Button backgroundColor={'red.900'} color='white' isDisabled={!canSubmit}>Submit</Button>
-            </Stack>
-        </Card>
-    </div>);
+                    <Button backgroundColor={'red.900'} color='white' isDisabled={!canSubmit}>Submit</Button>
+                </Stack>
+            </Card>
+        </div>
+    );
 }
