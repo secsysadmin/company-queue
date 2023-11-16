@@ -14,11 +14,9 @@ export default function Admin() {
     }, []);
 
     return (<>
+        <Banner title='Admin Panel'></Banner>
         {/*@ts-ignore*/}
-
         <div style={statusDivStyle}>
-
-            <Banner title='Admin Panel'></Banner>
             <NewCompany />
             <NewQueue companyNames={companyNames} />
         </div>

@@ -25,14 +25,16 @@ export default function NewCompany() {
             pin: pin,
             booth: booth
         };
-        const response = await fetch(url, {
+        fetch(url, {
             method: 'POST',
             headers: {
                 "Content-type": "application/json"
             },
             body: JSON.stringify(body)
         });
-        console.log(response.json());
+        setCompanyName('');
+        setBooth('');
+        setPin('');
     }
 
 
