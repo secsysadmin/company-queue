@@ -7,7 +7,7 @@ export const joinQueue = async (req: Request, res: Response) => {
     const { companyName, major, phoneNumber } = req.query;
 
     if (typeof major != "string") {
-        return res.send("Major is invalid");
+        return res.status(400).send("Major is invalid");
     }
 
     // remove all hyphens, spaces, and parenthesis from the phone number
@@ -20,7 +20,7 @@ export const joinQueue = async (req: Request, res: Response) => {
 
     // check if companyQueues is empty
     if (companyQueues.length === 0) {
-        return res.send("Company is not valid or has no queues.");
+        return res.status(400).send("Company is not valid or has no queues.");
     }
 
     // decide which line to put student in
@@ -29,7 +29,7 @@ export const joinQueue = async (req: Request, res: Response) => {
     );
 
     if (correctQueue == undefined) {
-        return res.send("Major not found");
+        return res.status(400).send("Major not found");
     }
 
     // check if student is already in queue
@@ -38,7 +38,7 @@ export const joinQueue = async (req: Request, res: Response) => {
     );
 
     if (studentAlreadyInQueue) {
-        return res.send("Student already in queue");
+        return res.status(400).send("Student already in queue");
     }
 
     // get index for student
