@@ -155,13 +155,15 @@ export const notifyNext = async (req: Request, res: Response) => {
 };
 
 export const createQueue = async (req: Request, res: Response) => {
-    const { adminPin, companyName, majors } = req.query;
+    const { adminPin, companyName, majors } = req.body;
     if (adminPin != ADMIN_PIN) {
-        res.status(400).json('invalid admin request').send();
+        console.log(req)
+        return res.status(400).json('invalid admin request').send();
     }
     const newLineNumber = await findHighestLineNumber(String(companyName)) + 1;
-
-    const majorsList = String(majors).split(',');
+    console.log(majors);
+    const majorsString = decodeURIComponent(majors);
+    const majorsList = majorsString.split(',');
 
     const newQueue = new companyQueueModel({
         companyName: String(companyName),

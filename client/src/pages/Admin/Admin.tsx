@@ -18,6 +18,7 @@ export default function Admin() {
         {/*@ts-ignore*/}
         <div style={statusDivStyle}>
             <NewCompany />
+            <hr style={{marginTop: '10px', borderColor: 'black', borderTopWidth: '1px', width: '50vw'}}/>
             <NewQueue companyNames={companyNames} />
         </div>
     </>);
