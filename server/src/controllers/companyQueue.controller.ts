@@ -29,7 +29,7 @@ export const joinQueue = async (req: Request, res: Response) => {
     );
 
     if (correctQueue == undefined) {
-        return res.status(400).send("Major not found");
+        return res.status(400).send("This company does not have a line for the selected major");
     }
 
     // check if student is already in queue
@@ -38,7 +38,7 @@ export const joinQueue = async (req: Request, res: Response) => {
     );
 
     if (studentAlreadyInQueue) {
-        return res.status(400).send("Student already in queue");
+        return res.status(401).send("Student already in queue");
     }
 
     // get index for student
