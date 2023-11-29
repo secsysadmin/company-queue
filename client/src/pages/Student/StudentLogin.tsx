@@ -1,7 +1,7 @@
 import Banner from "../../components/Banner";
 import { Input, Select, Button, Stack, Text } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from "react-router-dom";
+import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { SERVER_ENDPOINT } from "../../utils/consts";
 
 export default function StudentLogin() {
@@ -30,9 +30,19 @@ export default function StudentLogin() {
     async function joinQueue(phoneNumber: string, major: string, companyName: string) {
         const url = `${SERVER_ENDPOINT}/api/company-queue/join?companyName=${companyName}&phoneNumber=${phoneNumber}&major=${major}`;
         const response = await fetch(url, { method: 'POST' });
-        if (response.status == 400) {
+        if (!response.ok) {
             const resText = await response.text();
             setErrorMessage(resText);
+        }
+        else {
+            const responsebody = await response.json();
+            navigate({pathname: '/student/status', search: createSearchParams({
+                companyName: companyName,
+                phoneNumber: responsebody.phoneNumber,
+                ticketNumber: responsebody.ticketNumber,
+                studentIndex: responsebody.newStudentIndex
+
+            }).toString()});
         }
     }
     return (

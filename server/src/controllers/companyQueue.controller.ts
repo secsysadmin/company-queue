@@ -74,7 +74,7 @@ export const joinQueue = async (req: Request, res: Response) => {
         { new: true }
     );
 
-    return res.json(updatedQueue?.studentsInLine);
+    return res.status(200).json({ticketNumber, newStudentIndex, phoneNumber});
 };
 
 export const leaveQueue = async (req: Request, res: Response) => {
