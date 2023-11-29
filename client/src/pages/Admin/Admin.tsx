@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { getCompanyNames } from "../../utils/utils";
 
 export default function Admin() {
-    const [companyNames, setCompanyNames] = useState<string[]>();
+    const [companyNames, setCompanyNames] = useState<{ name: string, id: string }[]>();
 
     useEffect(() => {
         getCompanyNames().then((res) => {
@@ -19,7 +19,7 @@ export default function Admin() {
         <div style={statusDivStyle}>
             <NewCompany />
             <hr style={{marginTop: '10px', borderColor: 'black', borderTopWidth: '1px', width: '50vw'}}/>
-            <NewQueue companyNames={companyNames} />
+            <NewQueue companyArray={companyNames!} />
         </div>
     </>);
 }

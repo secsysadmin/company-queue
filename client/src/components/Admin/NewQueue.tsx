@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import { SERVER_ENDPOINT } from "../../utils/consts";
 
 interface NewQueueProps {
-    companyNames?: string[];
+    companyArray: { name: string, id: string }[];
 }
 
 export default function NewQueue(props: NewQueueProps) {
-    const [companyName, setCompanyName] = useState('');
+    const [company, setCompany] = useState('');
     const [majors, setMajors] = useState<string[]>([]);
     const [adminPin, setAdminPin] = useState<string>();
     const [canSubmit, setCanSubmit] = useState(false);
@@ -15,9 +15,9 @@ export default function NewQueue(props: NewQueueProps) {
     const majorOptions = ["AERO", "AREN", "BAEN", "BMEN", "CHEN", "CVEN", "CSCE", "CPEN", "ECEN", "EVEN", "ESET", "ISEN", "IDIS", "MSEN", "MEEN", "NUEN", "OCEN", "PETE"];
 
     useEffect(() => {
-        console.log(companyName, majors, adminPin)
-        setCanSubmit(companyName.length > 0 && majors.length > 0 && adminPin?.length != null);
-    }, [companyName, majors, adminPin]);
+        console.log(company, majors, adminPin)
+        setCanSubmit(company.length > 0 && majors.length > 0 && adminPin?.length != null);
+    }, [company, majors, adminPin]);
 
     const handleMajorChange = (checked: boolean, major: string) => {
         if (checked) {
@@ -30,12 +30,14 @@ export default function NewQueue(props: NewQueueProps) {
     async function submit(){
         const majorsString = majors.join(',');
         const encodedMajors = encodeURIComponent(majorsString);
+        const companyObj = JSON.parse(company);
 
         const url = SERVER_ENDPOINT + `/api/company-queue/create-queue`;
         const body = {
             majors: encodedMajors,
             adminPin: adminPin,
-            companyName: companyName,
+            companyName: companyObj.name,
+            companyID: companyObj.id,
         }
         fetch(url, {
             method: 'POST',
@@ -54,11 +56,11 @@ export default function NewQueue(props: NewQueueProps) {
                     <Text size={'lg'}>Add a new queue</Text>
                 </CardHeader>
                 <Stack>
-                    <Select placeholder="Company Name" onChange={(ev) => setCompanyName(ev.target.value)}>
+                    <Select placeholder="Company Name" onChange={(ev) => setCompany(ev.target.value)}>
                         {/* Add options for company names here */}
                         {
-                            props.companyNames?.map((company, index) => (
-                                <option value={company} key={index}>{company}</option>
+                            props.companyArray?.map((company, index) => (
+                                <option value={JSON.stringify(company)} key={index}>{company.name}</option>
                             ))
                         }
                     </Select>

@@ -157,7 +157,7 @@ export const notifyNext = async (req: Request, res: Response) => {
 };
 
 export const createQueue = async (req: Request, res: Response) => {
-    const { adminPin, companyName, majors } = req.body;
+    const { adminPin, companyName, majors, companyID } = req.body;
     if (adminPin != ADMIN_PIN) {
         console.log(req)
         return res.status(400).json('invalid admin request').send();
@@ -169,6 +169,7 @@ export const createQueue = async (req: Request, res: Response) => {
 
     const newQueue = new companyQueueModel({
         companyName: String(companyName),
+        companyID: String(companyID),
         lineNumber: newLineNumber,
         majors: majorsList,
         studentsInLine: []

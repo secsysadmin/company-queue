@@ -6,6 +6,7 @@ export interface Company {
 
   export interface CompanyQueue {
     companyName: string;
+    companyID: string;
     companyBooth: string;
     lineNumber: number;
     majors: string[];
