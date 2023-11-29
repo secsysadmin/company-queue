@@ -49,5 +49,5 @@ export default function StudentStatusController() {
 
     }, [phoneNumber]);
 
-    return (<StudentStatus companyName={companyName!} ticketNumber={ticketNumber!}></StudentStatus>);
+    return (<StudentStatus companyName={companyName!} ticketNumber={ticketNumber!} major={major!}></StudentStatus>);
 }
