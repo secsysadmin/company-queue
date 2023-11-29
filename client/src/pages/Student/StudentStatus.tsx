@@ -1,7 +1,13 @@
 import { Stack, Card, CardBody, CardHeader, Text, Heading, Button } from "@chakra-ui/react";
 import Banner from "../../components/Banner";
 
-export default function StudentStatus() {
+interface StudentStatusProps {
+    companyName: string;
+    ticketNumber: string;
+    
+}
+
+export default function StudentStatus(props: StudentStatusProps) {
 
 
     const company = "Tesla";

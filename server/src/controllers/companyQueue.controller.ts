@@ -74,7 +74,7 @@ export const joinQueue = async (req: Request, res: Response) => {
         { new: true }
     );
 
-    return res.status(200).json({ticketNumber, newStudentIndex, phoneNumber});
+    return res.status(200).json({ ticketNumber, newStudentIndex, phoneNumber });
 };
 
 export const leaveQueue = async (req: Request, res: Response) => {
@@ -175,4 +175,37 @@ export const createQueue = async (req: Request, res: Response) => {
         res.status(200).send()
     ).catch(() => res.status(401).json('failed to save queue to database').send());
 
-}  
+}
+
+export const checkStudent = async (req: Request, res: Response) => {
+    const { phoneNumber, companyName, major } = req.query;
+    const cleanedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
+
+    if(typeof major != 'string'){
+        return res.status(400).send('invalid major');
+    }
+
+    const companyQueues = await companyQueueModel.find({
+        companyName: companyName,
+    });
+
+    const correctQueue = companyQueues.find(queue =>
+        queue.majors.includes(major)
+    );
+
+    if (!correctQueue) {
+        return res.status(400).send("queue does not exist")
+    }
+
+    const studentAlreadyInQueue = correctQueue.studentsInLine.find(
+        student => student.phoneNumber === parseInt(cleanedPhoneNumber as string)
+    );
+
+    if(studentAlreadyInQueue){
+        return res.status(200).send("true");
+    }
+    else{
+        return res.status(201).send("false")
+    }
+
+}

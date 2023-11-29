@@ -37,6 +37,7 @@ export default function StudentLogin() {
         else {
             const responsebody = await response.json();
             navigate({pathname: '/student/status', search: createSearchParams({
+                major,
                 companyName: companyName,
                 phoneNumber: responsebody.phoneNumber,
                 ticketNumber: responsebody.ticketNumber,

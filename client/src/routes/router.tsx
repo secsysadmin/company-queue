@@ -4,8 +4,8 @@ import CompanyQueuePage from "../pages/Recruiter/CompanyQueuePage";
 import RecruiterDashboard from "../pages/Recruiter/RecruiterDashboard";
 import ErrorPage from "../pages/ErrorPage";
 import StudentLogin from "../pages/Student/StudentLogin";
-import StudentStatus from "../pages/Student/StudentStatus";
 import Admin from "../pages/Admin/Admin";
+import StudentStatusController from "../pages/Student/StudentStatusController";
 
 
 export const router = createBrowserRouter(createRoutesFromElements(
@@ -17,7 +17,7 @@ export const router = createBrowserRouter(createRoutesFromElements(
         </Route>
         <Route path="student">
             <Route path='login' element={<StudentLogin />}></Route>
-            <Route path='status' element={<StudentStatus />}></Route>
+            <Route path='status' element={<StudentStatusController/>}></Route>
         </Route>
         <Route path="admin" element={<Admin />} />
     </Route>
