@@ -67,6 +67,8 @@ export const joinQueue = async (req: Request, res: Response) => {
                 studentsInLine: {
                     phoneNumber: parseInt(cleanedPhoneNumber as string),
                     ticketNumber: ticketNumber,
+                    major: major,
+                    contacted: false,
                     index: newStudentIndex,
                 },
             },

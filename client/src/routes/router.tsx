@@ -6,6 +6,7 @@ import ErrorPage from "../pages/ErrorPage";
 import StudentLogin from "../pages/Student/StudentLogin";
 import Admin from "../pages/Admin/Admin";
 import StudentStatusController from "../pages/Student/StudentStatusController";
+import LandingPage from "../pages/Student/LandingPage";
 
 
 export const router = createBrowserRouter(createRoutesFromElements(
@@ -18,6 +19,7 @@ export const router = createBrowserRouter(createRoutesFromElements(
         <Route path="student">
             <Route path='login' element={<StudentLogin />}></Route>
             <Route path='status' element={<StudentStatusController/>}></Route>
+            <Route path='landing' element={<LandingPage/>}></Route>
         </Route>
         <Route path="admin" element={<Admin />} />
     </Route>

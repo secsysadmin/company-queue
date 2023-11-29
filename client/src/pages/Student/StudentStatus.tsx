@@ -4,7 +4,8 @@ import Banner from "../../components/Banner";
 interface StudentStatusProps {
     companyName: string;
     ticketNumber: string;
-    major: string
+    major: string;
+    leaveQueue: () => {};
 
 }
 
@@ -31,14 +32,10 @@ export default function StudentStatus(props: StudentStatusProps) {
                     </Stack>
                 </CardBody>
             </Card>
-            <Button onClick={(ev) => leaveQueue} backgroundColor={'red.900'} color={'white'}>Leave Queue</Button>
+            <Button onClick={(ev) => props.leaveQueue()} backgroundColor={'red.900'} color={'white'}>Leave Queue</Button>
         </Stack>
         </div>
     </>);
-}
-
-function leaveQueue(phoneNumber: string){
-
 }
 
 const statusDivStyle = {
