@@ -184,7 +184,7 @@ export const checkStudent = async (req: Request, res: Response) => {
     const { phoneNumber, companyName, major } = req.query;
     const cleanedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
 
-    if(typeof major != 'string'){
+    if (typeof major != 'string') {
         return res.status(400).send('invalid major');
     }
 
@@ -204,11 +204,22 @@ export const checkStudent = async (req: Request, res: Response) => {
         student => student.phoneNumber === parseInt(cleanedPhoneNumber as string)
     );
 
-    if(studentAlreadyInQueue){
+    if (studentAlreadyInQueue) {
         return res.status(200).send("true");
     }
-    else{
+    else {
         return res.status(201).send("false")
     }
 
+}
+
+export const getQueues = async (req: Request, res: Response) => {
+    const { id } = req.query;
+    const companyQueues = await companyQueueModel.find({
+        companyID: id
+    });
+    if(companyQueues.length === 0){
+        return res.status(400).send("no queue found");
+    }
+    return res.status(200).send(companyQueues);
 }

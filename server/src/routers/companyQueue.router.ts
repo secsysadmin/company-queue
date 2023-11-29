@@ -3,6 +3,7 @@ import { Router } from "express";
 import {
   checkStudent,
   createQueue,
+  getQueues,
   joinQueue,
   leaveQueue,
   notifyNext,
@@ -22,5 +23,7 @@ companyQueueRouter.post("/notify-next", notifyNext);
 companyQueueRouter.post("/create-queue", createQueue);
 
 companyQueueRouter.get("/check-student", checkStudent);
+
+companyQueueRouter.get("/get-queues", getQueues)
 
 

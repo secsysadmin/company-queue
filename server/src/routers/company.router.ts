@@ -5,6 +5,7 @@ import {
   getCompanies,
   getCompanyById,
   getCompanyByName,
+  recruiterLogin,
   updateCompany,
 } from "../controllers/company.controller";
 
@@ -19,3 +20,5 @@ companyRouter.post("/", addCompany);
 companyRouter.put("/:companyId", updateCompany);
 
 companyRouter.get("/id/:companyId", getCompanyById);
+
+companyRouter.get("recruiter-login", recruiterLogin)
