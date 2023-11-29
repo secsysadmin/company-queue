@@ -21,4 +21,4 @@ companyRouter.put("/:companyId", updateCompany);
 
 companyRouter.get("/id/:companyId", getCompanyById);
 
-companyRouter.get("recruiter-login", recruiterLogin)
+companyRouter.get("/recruiter-login", recruiterLogin)

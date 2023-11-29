@@ -1,14 +1,28 @@
 import Banner from "../../components/Banner";
 import { Stack, Input, Button, Text } from '@chakra-ui/react';
 import { useEffect, useState } from "react";
-import { PIN_LENGTH } from "../../utils/consts";
+import { PIN_LENGTH, SERVER_ENDPOINT } from "../../utils/consts";
+import { setCookie } from "../../utils/utils";
+import { useNavigate } from "react-router-dom";
 
 export default function RecruiterLogin() {
     const [canSubmit, setCanSubmit] = useState(false);
     const [pin, setPin] = useState('');
+    const [errorText, setErrorText] = useState<String>();
+
+    const navigate = useNavigate();
 
     const login = async () => {
-        
+        const url = SERVER_ENDPOINT + `/api/company/recruiter-login?pin=${pin}`
+        const response = await fetch(url);
+        if(response.ok){
+            setCookie("companyID", await response.text(), 2);
+            setErrorText('');
+            navigate('/recruiter/dashboard');
+        }
+        else{
+            setErrorText(await response.text());
+        }
     }
 
     useEffect(() => {
@@ -30,6 +44,7 @@ export default function RecruiterLogin() {
                 <Input variant='filled' placeholder="Pin" onChange={(ev) => setPin(ev.target.value)}></Input>
                 <Button isDisabled={!canSubmit} backgroundColor='red.900' color='white' onClick={() => login()}>Login</Button>
             </Stack>
+            <Text color={'red'}>{errorText}</Text>
         </div>
     </>;
 }
