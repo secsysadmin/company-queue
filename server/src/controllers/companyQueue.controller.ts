@@ -215,11 +215,16 @@ export const checkStudent = async (req: Request, res: Response) => {
 
 export const getQueues = async (req: Request, res: Response) => {
     const { id } = req.query;
-    const companyQueues = await companyQueueModel.find({
-        companyID: id
-    });
-    if(companyQueues.length === 0){
-        return res.status(400).send("no queue found");
+    try {
+        const companyQueues = await companyQueueModel.find({
+            companyID: id
+        });
+        if (companyQueues.length === 0) {
+            return res.status(400).send("no queue found");
+        }
+        return res.status(200).send(companyQueues);
     }
-    return res.status(200).send(companyQueues);
+    catch{
+        return res.status(500).send('db query error, possibly incorrectly formatted data')
+    }
 }

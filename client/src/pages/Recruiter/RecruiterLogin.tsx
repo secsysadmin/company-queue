@@ -2,10 +2,11 @@ import Banner from "../../components/Banner";
 import { Stack, Input, Button, Text } from '@chakra-ui/react';
 import { useEffect, useState } from "react";
 import { PIN_LENGTH, SERVER_ENDPOINT } from "../../utils/consts";
-import { setCookie } from "../../utils/utils";
+import { deleteCookie, setCookie } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 
 export default function RecruiterLogin() {
+    deleteCookie('companyID');
     const [canSubmit, setCanSubmit] = useState(false);
     const [pin, setPin] = useState('');
     const [errorText, setErrorText] = useState<String>();
@@ -16,7 +17,9 @@ export default function RecruiterLogin() {
         const url = SERVER_ENDPOINT + `/api/company/recruiter-login?pin=${pin}`
         const response = await fetch(url);
         if(response.ok){
-            setCookie("companyID", await response.text(), 2);
+            const idText = await response.text();
+
+            setCookie("companyID", JSON.parse(idText), 2);
             setErrorText('');
             navigate('/recruiter/dashboard');
         }

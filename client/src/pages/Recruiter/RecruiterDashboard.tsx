@@ -1,6 +1,11 @@
 import { Stack, Heading, Table, Thead, Tbody, Th, TableContainer, Card, CardHeader, CardBody, Button } from "@chakra-ui/react";
 import Banner from "../../components/Banner";
 import QueueLine from "../../components/QueueLine"; // Import the QueueLine component
+import { useState, useEffect } from 'react';
+import { getCookie } from "../../utils/utils";
+import { useNavigate } from "react-router-dom";
+import { Company, CompanyQueue } from "../../utils/interfaces";
+import { SERVER_ENDPOINT } from "../../utils/consts";
 
 const tableCellStyle = {
   padding: '8px',
@@ -8,15 +13,40 @@ const tableCellStyle = {
 };
 
 export default function RecruiterDashboard() {
-  const company = "Tesla";
+  const navigate = useNavigate();
+  const [companyID, setCompanyID] = useState<string>();
+  const [company, setCompany] = useState<Company>();
+  const [companyQueues, setCompanyQueues] = useState<CompanyQueue[]>();
 
-  // Define an array of queue lines
-  const queueLines = [
-    { major: 'ALL MAJORS' },
-    { major: 'CPSC' },
-    { major: 'MEEN' },
-    { major: 'ELEN' },
-  ];
+  // manage login state
+  useEffect(() => {
+    const id = getCookie('companyID');
+    if (id == null) {
+      navigate('/recruiter/login');
+    }
+    else {
+      setCompanyID(id);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (companyID == undefined) {
+      return;
+    }
+    const companyUrl = SERVER_ENDPOINT + `/api/company/id/${companyID}`;
+    fetch(companyUrl).then((res) => {
+      return res.json();
+    }).then((data) => {
+      setCompany(data);
+    });
+
+    const url = SERVER_ENDPOINT + `/api/company-queue/get-queues?id=${companyID}`;
+    fetch(url).then((res) => {
+      return res.json();
+    }).then((data) => {
+      setCompanyQueues(data);
+    })
+  }, [companyID]);
 
   return (
     <>
@@ -24,7 +54,7 @@ export default function RecruiterDashboard() {
       {/*@ts-ignore*/}
       <div style={statusDivStyle}>
         <Stack>
-          <Heading>{company}</Heading>
+          <Heading>{company?.name}</Heading>
           <Card backgroundColor={"blackAlpha.100"}>
             <CardHeader>
               <Heading size={'md'}>Your lines
@@ -44,11 +74,11 @@ export default function RecruiterDashboard() {
                     </tr>
                   </Thead>
                   <Tbody>
-                    {queueLines.map((line, index) => (
+                    {companyQueues?.map((line, index) => (
                       <QueueLine
                         key={index}
-                        major={line.major}
-                        onNavigateClick={() => handleViewQueue(line.major)} // Handle the view action
+                        major={line.majors.toString()}
+                        onNavigateClick={() => handleViewQueue(line.majors.toString())} // Handle the view action
                       />
                     ))}
                   </Tbody>

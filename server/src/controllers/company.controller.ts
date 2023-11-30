@@ -53,20 +53,26 @@ export const updateCompany = async (req: Request, res: Response) => {
 
 export const getCompanyById = async (req: Request, res: Response) => {
     const companyId: string = req.params.companyId;
-
-    const company = await companyModel.find({ id: companyId });
-
-    res.json(company);
+    try {
+        const company = await companyModel.findOne({ _id: companyId });
+        if (!company) {
+            res.status(404).send('no company found with id ' + companyId);
+        }
+        return res.send(company?.toJSON());
+    }
+    catch{
+        return res.status(500).send('db query failed. data could be improperly formatted');
+    }
 };
 
 export const recruiterLogin = async (req: Request, res: Response) => {
     const { pin } = req.query;
 
-    const company = await companyModel.find({pin: pin});
+    const company = await companyModel.findOne({ pin: pin });
 
-    if(company.length === 0){
+    if (company == undefined) {
         return res.status(400).send('invalid pin');
     }
-
-    return res.status(200).send(company[0]._id);
+    company.save();
+    return res.status(200).send(company._id);
 }
