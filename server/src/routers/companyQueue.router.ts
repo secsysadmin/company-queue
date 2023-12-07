@@ -8,6 +8,7 @@ import {
   leaveQueue,
   notifyNext,
   spokenTo,
+  getQueue
 } from "../controllers/companyQueue.controller";
 
 export const companyQueueRouter = Router();
@@ -24,6 +25,8 @@ companyQueueRouter.post("/create-queue", createQueue);
 
 companyQueueRouter.get("/check-student", checkStudent);
 
-companyQueueRouter.get("/get-queues", getQueues)
+companyQueueRouter.get("/get-queues", getQueues);
+
+companyQueueRouter.get("/get-queue", getQueue);
 
 

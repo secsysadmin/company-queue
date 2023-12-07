@@ -5,6 +5,7 @@ export interface Company {
   }
 
   export interface CompanyQueue {
+    _id: string;
     companyName: string;
     companyID: string;
     companyBooth: string;
@@ -18,3 +19,4 @@ export interface Company {
       contacted: boolean;
     }[];
   }
+

@@ -1,6 +1,11 @@
-import { Stack, Heading, Table, Thead, Tbody, Tr, Th, TableContainer, Card, CardHeader, CardBody, Button } from "@chakra-ui/react";
+import { Stack, Heading, Table, Thead, Tbody, Tr, Th, TableContainer, Card, CardHeader, CardBody, Button, Text } from "@chakra-ui/react";
 import Banner from "../../components/Banner";
 import QueueStudent from "../../components/QueueStudent"; // Import the QueueStudent component
+import { useState, useEffect } from 'react'
+import useRecruiterLogin from "../../utils/useRecruiterLogin";
+import { useSearchParams, useNavigate } from "react-router-dom";
+import { SERVER_ENDPOINT } from "../../utils/consts";
+import { CompanyQueue } from "../../utils/interfaces";
 
 const tableCellStyle = {
   padding: '8px',
@@ -8,23 +13,46 @@ const tableCellStyle = {
 };
 
 export default function CompanyQueuePage() {
-  const company = "Tesla";
 
-  // Define an array of students
-  const students = [
-    { number: 1, major: 'CPSC', name: 'John Smith' },
-    { number: 2, major: 'MEEN', name: 'Allie Grater' },
-    { number: 3, major: 'ELEN', name: 'Gene Eva Convenshun' },
-  ];
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const [errorText, setErrorText] = useState<string>();
+
+  const companyName = searchParams.get('companyName');
+  const queueID = searchParams.get('id');
+  const [queue, setQueue] = useState<CompanyQueue>();
+
+  // manage login state
+  const { companyID } = useRecruiterLogin();
+
+  useEffect(() => {
+    // validate link
+    if (!companyName || !queueID) {
+      navigate('/recruiter/dashboard');
+    }
+
+    // fetch queue
+    const url = SERVER_ENDPOINT + `/api/company-queue/get-queue?id=${queueID}`;
+    fetch(url, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then((res) => {
+      return res.json();
+    }).then((data) => {
+      setQueue(data);
+    }).catch((error) => setErrorText(JSON.stringify(error)));
+
+  }, []);
 
   return (
     <>
       <Banner title='Company Queue for Recruiters'></Banner>
-       {/*@ts-ignore*/}
+      {/*@ts-ignore*/}
       <div style={statusDivStyle}>
 
         <Stack>
-          <Heading>{company}'s Line(s)</Heading>
+          <Heading>{companyName}'s Line(s)</Heading>
           <Card backgroundColor={"blackAlpha.100"}>
             <CardHeader>
               <Heading size={'md'}>All Majors Line
@@ -45,13 +73,13 @@ export default function CompanyQueuePage() {
                     </Tr>
                   </Thead>
                   <Tbody>
-                    {students.map((student, index) => (
+                    {queue && queue.studentsInLine.map((student, index) => (
                       <QueueStudent
                         key={index}
-                        number={student.number}
+                        number={student.phoneNumber}
                         major={student.major}
-                        name={student.name}
-                        onRemoveClick={() => handleRemoveStudent(student.number)}
+                        name={student.ticketNumber}
+                        onRemoveClick={() => handleRemoveStudent(student.phoneNumber)}
                       />
                     ))}
                   </Tbody>
@@ -59,6 +87,7 @@ export default function CompanyQueuePage() {
               </TableContainer>
             </CardBody>
           </Card>
+          <Text color='red'>{errorText}</Text>
         </Stack>
       </div>
     </>

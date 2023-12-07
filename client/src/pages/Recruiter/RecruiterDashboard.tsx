@@ -6,6 +6,7 @@ import { getCookie } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { Company, CompanyQueue } from "../../utils/interfaces";
 import { SERVER_ENDPOINT } from "../../utils/consts";
+import useRecruiterLogin from "../../utils/useRecruiterLogin";
 
 const tableCellStyle = {
   padding: '8px',
@@ -14,20 +15,11 @@ const tableCellStyle = {
 
 export default function RecruiterDashboard() {
   const navigate = useNavigate();
-  const [companyID, setCompanyID] = useState<string>();
   const [company, setCompany] = useState<Company>();
   const [companyQueues, setCompanyQueues] = useState<CompanyQueue[]>();
 
   // manage login state
-  useEffect(() => {
-    const id = getCookie('companyID');
-    if (id == null) {
-      navigate('/recruiter/login');
-    }
-    else {
-      setCompanyID(id);
-    }
-  }, []);
+  const {companyID} = useRecruiterLogin();
 
   useEffect(() => {
     if (companyID == undefined) {
@@ -48,6 +40,10 @@ export default function RecruiterDashboard() {
     })
   }, [companyID]);
 
+  function handleViewQueue(queue: CompanyQueue) {
+    navigate(`/recruiter/queue?companyName=${company?.name}&id=${queue._id}`);
+  }
+
   return (
     <>
       <Banner title='Company Queue for Recruiters' />
@@ -59,7 +55,6 @@ export default function RecruiterDashboard() {
             <CardHeader>
               <Heading size={'md'}>Your lines
                 <div style={{ float: 'right' }}>
-                  <Button colorScheme='red' size='sm'>Close All Queues</Button>
                 </div>
               </Heading>
             </CardHeader>
@@ -78,7 +73,7 @@ export default function RecruiterDashboard() {
                       <QueueLine
                         key={index}
                         major={line.majors.toString()}
-                        onNavigateClick={() => handleViewQueue(line.majors.toString())} // Handle the view action
+                        onNavigateClick={() => handleViewQueue(line)} // Handle the view action
                       />
                     ))}
                   </Tbody>
@@ -98,8 +93,3 @@ const statusDivStyle = {
   flexDirection: 'column',
   alignItems: 'center',
 };
-
-// Define a function to handle the view action
-function handleViewQueue(major: string) {
-  // Implement the action to view the queue page or perform any other desired action
-}

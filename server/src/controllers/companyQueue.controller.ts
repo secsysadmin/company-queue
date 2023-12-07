@@ -224,7 +224,21 @@ export const getQueues = async (req: Request, res: Response) => {
         }
         return res.status(200).send(companyQueues);
     }
-    catch{
+    catch {
+        return res.status(500).send('db query error, possibly incorrectly formatted data')
+    }
+}
+
+export const getQueue = async (req: Request, res: Response) => {
+    const { id } = req.query;
+    try {
+        const companyQueue = await companyQueueModel.findById(id);
+        if (companyQueue == undefined ) {
+            return res.status(400).send("no queue found");
+        }
+        return res.status(200).send(companyQueue);
+    }
+    catch {
         return res.status(500).send('db query error, possibly incorrectly formatted data')
     }
 }
