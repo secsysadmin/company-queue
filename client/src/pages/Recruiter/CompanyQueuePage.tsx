@@ -44,6 +44,15 @@ export default function CompanyQueuePage() {
     }).catch((error) => setErrorText(JSON.stringify(error)));
   }
 
+  const handleRemoveStudent = (ticketNumber: string) => {
+    const url = SERVER_ENDPOINT + `/api/company-queue/mark-as-spoken-to?ticketNumber=${ticketNumber}`;
+
+    // make api call
+    fetch(url, { method: 'DELETE' }).then((res) => {
+      return res.json();
+    }).then(() => { update() }).catch((error) => console.error(error));
+  }
+
   useEffect(() => {
     update();
 
@@ -106,12 +115,3 @@ const statusDivStyle = {
   alignItems: 'center',
 };
 
-function handleRemoveStudent(studentNumber: string) {
-  const url = SERVER_ENDPOINT + `/api/company-queue/mark-as-spoken-to?ticketNumber=${studentNumber}`;
-
-  // make api call
-  fetch(url, { method: 'DELETE' }).then((res) => {
-    return res.json();
-  }).catch((error) => console.error(error));
-
-}
