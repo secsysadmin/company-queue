@@ -23,7 +23,7 @@ export default function CompanyQueuePage() {
   const [queue, setQueue] = useState<CompanyQueue>();
 
   // manage login state
-  const { companyID } = useRecruiterLogin();
+  useRecruiterLogin();
 
   const update = () => {
     // validate link
@@ -65,7 +65,7 @@ export default function CompanyQueuePage() {
       <div style={statusDivStyle}>
 
         <Stack width={'50vw'} maxWidth={'95vw'}>
-          <Heading>{companyName}'s Line(s)</Heading>
+          <Heading>Company: {companyName}</Heading>
           <Button minHeight={'50px'} backgroundColor={'red.900'} color={'white'} size='sm' onClick={() => update()}>Refresh Queue</Button>
           <Card backgroundColor={"blackAlpha.100"}>
             <CardHeader>
