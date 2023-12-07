@@ -64,12 +64,12 @@ export default function CompanyQueuePage() {
       {/*@ts-ignore*/}
       <div style={statusDivStyle}>
 
-        <Stack>
+        <Stack width={'50vw'} maxWidth={'95vw'}>
           <Heading>{companyName}'s Line(s)</Heading>
-          <Button backgroundColor={'red.900'} color={'white'} size='sm' onClick={() => update()}>Refresh</Button>
+          <Button minHeight={'50px'} backgroundColor={'red.900'} color={'white'} size='sm' onClick={() => update()}>Refresh Queue</Button>
           <Card backgroundColor={"blackAlpha.100"}>
             <CardHeader>
-              <Heading size={'md'}>All Majors Line
+              <Heading size={'md'}>{queue?.majors.join(', ')} Line
                 <div style={{ float: 'right' }}>
                   <Button colorScheme='red' size='sm'>Close Queue</Button>
                 </div>
