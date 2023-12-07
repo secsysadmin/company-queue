@@ -74,6 +74,7 @@ export default function RecruiterDashboard() {
                         key={index}
                         major={line.majors.toString()}
                         onNavigateClick={() => handleViewQueue(line)} // Handle the view action
+                        lineLength={line.studentsInLine.length}
                       />
                     ))}
                   </Tbody>
