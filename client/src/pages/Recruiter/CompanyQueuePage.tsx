@@ -25,7 +25,7 @@ export default function CompanyQueuePage() {
   // manage login state
   const { companyID } = useRecruiterLogin();
 
-  useEffect(() => {
+  const update = () => {
     // validate link
     if (!companyName || !queueID) {
       navigate('/recruiter/dashboard');
@@ -42,6 +42,10 @@ export default function CompanyQueuePage() {
     }).then((data) => {
       setQueue(data);
     }).catch((error) => setErrorText(JSON.stringify(error)));
+  }
+
+  useEffect(() => {
+    update();
 
   }, []);
 
@@ -53,6 +57,7 @@ export default function CompanyQueuePage() {
 
         <Stack>
           <Heading>{companyName}'s Line(s)</Heading>
+          <Button backgroundColor={'red.900'} color={'white'} size='sm' onClick={() => update()}>Refresh</Button>
           <Card backgroundColor={"blackAlpha.100"}>
             <CardHeader>
               <Heading size={'md'}>All Majors Line
@@ -79,7 +84,7 @@ export default function CompanyQueuePage() {
                         number={student.phoneNumber}
                         major={student.major}
                         name={student.ticketNumber}
-                        onRemoveClick={() => handleRemoveStudent(student.phoneNumber)}
+                        onRemoveClick={() => handleRemoveStudent(student.ticketNumber)}
                       />
                     ))}
                   </Tbody>
@@ -101,7 +106,12 @@ const statusDivStyle = {
   alignItems: 'center',
 };
 
-// Define a function to handle student removal
-function handleRemoveStudent(studentNumber: number) {
-  // Implement student removal logic here
+function handleRemoveStudent(studentNumber: string) {
+  const url = SERVER_ENDPOINT + `/api/company-queue/mark-as-spoken-to?ticketNumber=${studentNumber}`;
+
+  // make api call
+  fetch(url, { method: 'DELETE' }).then((res) => {
+    return res.json();
+  }).catch((error) => console.error(error));
+
 }
