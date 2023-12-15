@@ -1,36 +1,43 @@
 import mongoose, { Schema } from "mongoose";
+import { Major } from "./major.model";
 
-// Interface representing the Company document
-export interface CompanyQueue {
-  companyName: string;
-  companyID: string;
-  lineNumber: number;
-  majors: string[];
-  studentsInLine: {
-    phoneNumber: number;
-    major: string;
-    ticketNumber: string;
-    index: number;
-    contacted: boolean;
-  }[];
+export interface StudentInLine {
+  name: string;
+  phoneNumber: number;
+  major: Major;
+  ticketNumber: string;
+  joinedAt: Date;
+  notifiedAt: Date;
 }
 
-// Define the Company schema
-const CompanyQueueSchema: Schema = new Schema({
+export interface ICompanyQueue extends Document {
+  companyName: string;
+  companyID: Schema.Types.ObjectId;
+  lineNumber: number;
+  majors: Major[];
+  studentsInLine: StudentInLine[];
+}
+
+const companyQueueSchema = new Schema<ICompanyQueue>({
   companyName: { type: String, required: true },
-  companyID: {type: String, required: true},
+  companyID: { type: Schema.Types.ObjectId, required: true },
   lineNumber: { type: Number, required: true },
-  majors: { type: [String], required: true },
+  majors: [{ type: String, enum: Object.values(Major) }],
   studentsInLine: [
     {
-      phoneNumber: { type: Number, required: true },
-      major: { type: String, required: true },
+      name: { type: String, required: true },
+      phoneNumber: { type: String, required: true },
+      major: { type: String, enum: Object.values(Major), required: true },
       ticketNumber: { type: String, required: true },
-      index: { type: Number, required: true },
-      contacted: { type: Boolean, required: true },
+      joinedAt: { type: Date, default: Date.now },
+      notifiedAt: { type: Date, default: null },
     },
   ],
 });
 
-// Create and export the Company model
-export default mongoose.model<CompanyQueue>("CompanyQueue", CompanyQueueSchema);
+const CompanyQueue = mongoose.model<ICompanyQueue>(
+  "CompanyQueue",
+  companyQueueSchema
+);
+
+export default CompanyQueue;

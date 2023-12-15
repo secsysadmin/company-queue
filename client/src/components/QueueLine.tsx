@@ -1,8 +1,8 @@
 import { Tr, Td, Button } from "@chakra-ui/react";
 
 const QueueLineStyle = {
-  padding: '8px',
-  margin: '0',
+  padding: "8px",
+  margin: "0",
 };
 
 interface QueueLineProps {
@@ -17,7 +17,10 @@ export default function QueueLine(props: QueueLineProps) {
       <Td style={QueueLineStyle}>{props.major}</Td>
       <Td style={QueueLineStyle}>{props.lineLength}</Td>
       <Td style={QueueLineStyle}>
-        <Button colorScheme='green' size='sm' onClick={props.onNavigateClick}>
+        <Button
+          colorScheme='green'
+          size='sm'
+          onClick={props.onNavigateClick}>
           View
         </Button>
       </Td>
