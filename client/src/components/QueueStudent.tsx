@@ -1,4 +1,5 @@
 import { Tr, Td, Button } from "@chakra-ui/react";
+import { Major } from "../utils/interfaces";
 
 const QueueStudentStyle = {
   padding: "8px",
@@ -7,7 +8,7 @@ const QueueStudentStyle = {
 
 interface QueueStudentProps {
   number: number;
-  major: string;
+  major: Major;
   name: string;
   onRemoveClick: () => void;
 }

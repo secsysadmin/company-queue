@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { SERVER_ENDPOINT } from "../../utils/consts";
+import { Major } from "../../utils/interfaces";
 
 interface NewQueueProps {
   companyArray: { name: string; id: string }[];
@@ -17,39 +18,17 @@ interface NewQueueProps {
 
 export default function NewQueue(props: NewQueueProps) {
   const [company, setCompany] = useState("");
-  const [majors, setMajors] = useState<string[]>([]);
+  const [majors, setMajors] = useState<Major[]>([]);
   const [adminPin, setAdminPin] = useState<string>();
   const [canSubmit, setCanSubmit] = useState(false);
 
-  const majorOptions = [
-    "AERO",
-    "AREN",
-    "BAEN",
-    "BMEN",
-    "CHEN",
-    "CVEN",
-    "CSCE",
-    "CPEN",
-    "ECEN",
-    "EVEN",
-    "ESET",
-    "ISEN",
-    "IDIS",
-    "MSEN",
-    "MEEN",
-    "NUEN",
-    "OCEN",
-    "PETE",
-  ];
-
   useEffect(() => {
-    console.log(company, majors, adminPin);
     setCanSubmit(
       company.length > 0 && majors.length > 0 && adminPin?.length != null
     );
   }, [company, majors, adminPin]);
 
-  const handleMajorChange = (checked: boolean, major: string) => {
+  const handleMajorChange = (checked: boolean, major: Major) => {
     if (checked) {
       setMajors(prevMajors => [...prevMajors, major]);
     } else {
@@ -101,7 +80,7 @@ export default function NewQueue(props: NewQueueProps) {
             placeholder='admin pin'
             onChange={ev => setAdminPin(ev.target.value)}></Input>
 
-          {majorOptions.map((major, index) => (
+          {Object.values(Major).map((major, index) => (
             <Checkbox
               key={index}
               value={major}
@@ -114,7 +93,7 @@ export default function NewQueue(props: NewQueueProps) {
             backgroundColor={"red.900"}
             color='white'
             isDisabled={!canSubmit}
-            onClick={ev => submit()}>
+            onClick={() => submit()}>
             Submit
           </Button>
         </Stack>

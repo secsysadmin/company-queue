@@ -3,6 +3,7 @@ import { createSearchParams, useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { SERVER_ENDPOINT } from "../../utils/consts";
+import { Major } from "../../utils/interfaces";
 
 export default function StudentStatusController() {
   const navigate = useNavigate();
@@ -14,12 +15,13 @@ export default function StudentStatusController() {
   const phoneNumber = searchParams.get("phoneNumber");
   const ticketNumber = searchParams.get("ticketNumber");
   const major = searchParams.get("major");
+
   // navigate away if incorrect query params
   if (!companyName) {
     navigate("/student/login");
   } else if (companyName && (!phoneNumber || !ticketNumber)) {
     navigate({
-      pathname: "/student/login",
+      pathname: "/student/login?company=" + companyName,
       search: createSearchParams({
         company: companyName,
       }).toString(),
@@ -38,14 +40,10 @@ export default function StudentStatusController() {
     });
   };
 
-  // query if student is in queue
-  // if not navigate back to login with company name
   useEffect(() => {
     const url =
       SERVER_ENDPOINT +
-      `/api/company-queue/check-student?phoneNumber=${phoneNumber}&companyName=${encodeURIComponent(
-        String(companyName)
-      )}&major=${encodeURIComponent(String(major))}`;
+      `/api/company-queue/check-student?phoneNumber=${phoneNumber}`;
 
     fetch(url, {
       headers: {
@@ -57,7 +55,7 @@ export default function StudentStatusController() {
       })
       .then(data => {
         if (data != "true") {
-          navigate("/student/login");
+          navigate("/student/login?company=" + companyName);
         }
       })
       .catch();

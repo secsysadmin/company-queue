@@ -58,7 +58,7 @@ export const joinQueue = async (req: Request, res: Response) => {
   const ticketNumber = getRandomTicketNumber();
 
   // add student to queue and update mongodb
-  CompanyQueue.findOneAndUpdate(
+  await CompanyQueue.findOneAndUpdate(
     {
       companyName: companyName,
       lineNumber: correctQueue.lineNumber,
@@ -82,7 +82,7 @@ export const joinQueue = async (req: Request, res: Response) => {
     (student1, student2) => {
       return student1.joinedAt.getTime() - student2.joinedAt.getTime();
     }
-  )[0];
+  )[0] ?? { joinedAt: new Date() };
   const waitTime = Date.now() - earliestStudent.joinedAt.getTime();
 
   return res.status(200).json({ ticketNumber, waitTime, phoneNumber });
@@ -168,11 +168,9 @@ export const notifyNext = async (req: Request, res: Response) => {
 export const createQueue = async (req: Request, res: Response) => {
   const { adminPin, companyName, majors, companyID } = req.body;
   if (adminPin != ADMIN_PIN) {
-    console.log(req);
     return res.status(400).json("invalid admin request").send();
   }
   const newLineNumber = (await findHighestLineNumber(String(companyName))) + 1;
-  console.log(majors);
   const majorsString = decodeURIComponent(majors);
   const majorsList = majorsString.split(",");
 
@@ -192,33 +190,20 @@ export const createQueue = async (req: Request, res: Response) => {
 };
 
 export const checkStudent = async (req: Request, res: Response) => {
-  const { phoneNumber, companyName, major } = req.query;
+  const { phoneNumber } = req.query;
   const cleanedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
 
-  if (typeof major != "string") {
-    return res.status(400).send("invalid major");
-  }
-
-  const companyQueues = await CompanyQueue.find({
-    companyName: companyName,
+  const companyQueue = await CompanyQueue.findOne({
+    "studentsInLine.phoneNumber": parseInt(cleanedPhoneNumber as string),
   });
 
-  const correctQueue = companyQueues.find(queue =>
-    queue.majors.includes(major as Major)
-  );
+  console.log(phoneNumber, companyQueue?.studentsInLine);
 
-  if (!correctQueue) {
-    return res.status(400).send("queue does not exist");
-  }
-
-  const studentAlreadyInQueue = correctQueue.studentsInLine.find(
-    student => student.phoneNumber === parseInt(cleanedPhoneNumber as string)
-  );
-
-  if (studentAlreadyInQueue) {
-    return res.status(200).send("true");
+  // If the company queue is not found, the student is not in any company queue
+  if (!companyQueue) {
+    return res.send("false");
   } else {
-    return res.status(201).send("false");
+    return res.send("true");
   }
 };
 

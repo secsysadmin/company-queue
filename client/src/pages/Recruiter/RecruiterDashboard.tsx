@@ -90,7 +90,7 @@ export default function RecruiterDashboard() {
                     {companyQueues?.map((line, index) => (
                       <QueueLine
                         key={index}
-                        major={line.majors.toString()}
+                        majors={line.majors}
                         onNavigateClick={() => handleViewQueue(line)} // Handle the view action
                         lineLength={line.studentsInLine.length}
                       />

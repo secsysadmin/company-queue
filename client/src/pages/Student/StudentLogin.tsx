@@ -1,11 +1,20 @@
 import Banner from "../../components/Banner";
-import { Input, Select, Button, Stack, Text } from "@chakra-ui/react";
+import {
+  Input,
+  Select,
+  Button,
+  Stack,
+  Text,
+  FormControl,
+} from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { SERVER_ENDPOINT } from "../../utils/consts";
+import { Major } from "../../utils/interfaces";
 
 export default function StudentLogin() {
-  const [major, setMajor] = useState("");
+  const [major, setMajor] = useState<string>();
+  const [name, setName] = useState<string>();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [canSubmit, setCanSubmit] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -17,21 +26,22 @@ export default function StudentLogin() {
 
   useEffect(() => {
     if (!company) {
-      navigate("/404");
+      navigate("/");
     }
   }, [location, searchParams, company]);
 
   useEffect(() => {
-    setCanSubmit(isValidPhone(phoneNumber) && !!major);
-  }, [major, phoneNumber]);
+    setCanSubmit(isValidPhone(phoneNumber) && !!major && !!name);
+  }, [major, phoneNumber, name]);
 
   // call login on backend
   async function joinQueue(
     phoneNumber: string,
-    major: string,
-    companyName: string
+    major: Major,
+    companyName: string,
+    name: string
   ) {
-    const url = `${SERVER_ENDPOINT}/api/company-queue/join?companyName=${companyName}&phoneNumber=${phoneNumber}&major=${major}`;
+    const url = `${SERVER_ENDPOINT}/api/company-queue/join?companyName=${companyName}&phoneNumber=${phoneNumber}&major=${major}&name=${name}`;
     const response = await fetch(url, { method: "POST" });
     if (!response.ok) {
       const resText = await response.text();
@@ -42,10 +52,9 @@ export default function StudentLogin() {
         pathname: "/student/status",
         search: createSearchParams({
           major,
-          companyName: companyName,
-          phoneNumber: responsebody.phoneNumber,
+          companyName,
           ticketNumber: responsebody.ticketNumber,
-          studentIndex: responsebody.newStudentIndex,
+          phoneNumber,
         }).toString(),
       });
     }
@@ -58,56 +67,53 @@ export default function StudentLogin() {
         alignItems: "center",
       }}>
       <Banner title='Queue Login'></Banner>
-      <Stack
-        marginTop='2em'
-        spacing={3}>
-        <Text fontSize='xl'>Login to {company}'s queue</Text>
-        <Input
-          placeholder='Phone Number'
-          variant='filled'
-          onChange={ev => setPhoneNumber(ev.target.value)}></Input>
-        <Select
-          placeholder='Major'
-          variant='filled'
-          onChange={ev => setMajor(ev.target.value)}>
-          <option value='AERO'>AERO</option>
-          <option value='AREN'>AREN</option>
-          <option value='BAEN'>BAEN</option>
-          <option value='BMEN'>BMEN</option>
-          <option value='CHEN'>CHEN</option>
-          <option value='CVEN'>CVEN</option>
-          <option value='CSCE'>CSCE</option>
-          <option value='CPEN'>CPEN</option>
-          <option value='ECEN'>ECEN</option>
-          <option value='EVEN'>EVEN</option>
-          <option value='ESET'>ESET</option>
-          <option value='ISEN'>ISEN</option>
-          <option value='IDIS'>IDIS</option>
-          <option value='MSEN'>MSEN</option>
-          <option value='MEEN'>MEEN</option>
-          <option value='NUEN'>NUEN</option>
-          <option value='OCEN'>OCEN</option>
-          <option value='PETE'>PETE</option>
-          {/* These disabled options exist so someone can scroll 
+      <FormControl w={"50%"}>
+        <Stack
+          marginTop='2em'
+          spacing={3}>
+          <Text fontSize='xl'>Login to {company}'s queue</Text>
+          <Input
+            placeholder='Name'
+            variant='filled'
+            onChange={ev => setName(ev.target.value)}></Input>
+          <Input
+            placeholder='Phone Number'
+            variant='filled'
+            onChange={ev => setPhoneNumber(ev.target.value)}></Input>
+          <Select
+            placeholder='Major'
+            variant='filled'
+            onChange={ev => setMajor(ev.target.value as Major)}>
+            {Object.values(Major).map((major, index) => (
+              <option
+                value={major}
+                key={index}>
+                {major}
+              </option>
+            ))}
+            {/* These disabled options exist so someone can scroll 
                     to the bottom of the list without it cuttign off*/}
-          <option
-            disabled={true}
-            value='NO'></option>
-          <option
-            disabled={true}
-            value='NO'></option>
-          <option
-            disabled={true}
-            value='NO'></option>
-        </Select>
-        <Button
-          onClick={ev => joinQueue(phoneNumber, major, company!)}
-          isDisabled={!canSubmit}
-          backgroundColor='red.900'
-          color='white'>
-          Join Queue
-        </Button>
-      </Stack>
+            <option
+              disabled={true}
+              value='NO'></option>
+            <option
+              disabled={true}
+              value='NO'></option>
+            <option
+              disabled={true}
+              value='NO'></option>
+          </Select>
+          <Button
+            onClick={() =>
+              joinQueue(phoneNumber, major as Major, company!, name!)
+            }
+            isDisabled={!canSubmit}
+            backgroundColor='red.900'
+            color='white'>
+            Join Queue
+          </Button>
+        </Stack>
+      </FormControl>
       <Text color={"red"}>{errorMessage}</Text>
     </div>
   );
