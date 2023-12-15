@@ -197,8 +197,6 @@ export const checkStudent = async (req: Request, res: Response) => {
     "studentsInLine.phoneNumber": parseInt(cleanedPhoneNumber as string),
   });
 
-  console.log(phoneNumber, companyQueue?.studentsInLine);
-
   // If the company queue is not found, the student is not in any company queue
   if (!companyQueue) {
     return res.send("false");
