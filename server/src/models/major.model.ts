@@ -1,10 +1,4 @@
-export interface Company {
-  name: string;
-  pin: string;
-  booth: string;
-}
-
-export enum Major {
+enum Major {
   CPSC = "Computer Science",
   CPEN = "Computer Engineering",
   MEEN = "Mechanical Engineering",
@@ -26,20 +20,4 @@ export enum Major {
   MISC = "Other",
 }
 
-export interface StudentInLine {
-  name: string;
-  phoneNumber: number;
-  major: Major;
-  ticketNumber: string;
-  joinedAt: Date;
-  notifiedAt: Date;
-}
-
-export interface Queue {
-  _id: string;
-  companyName: string;
-  companyID: string;
-  lineNumber: number;
-  majors: Major[];
-  studentsInLine: StudentInLine[];
-}
+export { Major };

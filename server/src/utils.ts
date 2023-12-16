@@ -1,6 +1,4 @@
-import companyQueueModel from "./models/companyQueue.model";
-
-export const ADMIN_PIN = 'baileyOffDaLeash';
+import QueueModel from "./models/queue.model";
 
 export const getRandomTicketNumber = () => {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -14,20 +12,18 @@ export const getRandomTicketNumber = () => {
   return ticketNumber;
 };
 
-export const findHighestLineNumber = async (companyName: string): Promise<number> => {
-  try {
-    const queues = await companyQueueModel.find({ companyName: companyName });
+export const getWaitTime = async (queueId: string, joinedAt?: number) => {
+  const queue = await QueueModel.findById(queueId);
 
-    let highestLineNumber = 0;
-    queues.forEach((queue) => {
-      if (queue.lineNumber > highestLineNumber) {
-        highestLineNumber = queue.lineNumber;
-      }
-    });
-
-    return highestLineNumber;
-  } catch (error) {
-    console.error('Error finding the highest line number:', error);
-    throw error;
+  if (queue === null) {
+    return;
   }
-}
+
+  const sortedStudents = queue.studentsInLine.sort((student1, student2) => {
+    return student1.joinedAt.getTime() - student2.joinedAt.getTime();
+  });
+
+  const earliestStudent = sortedStudents[0] ?? { joinedAt: new Date() };
+
+  return (joinedAt ?? Date.now()) - earliestStudent.joinedAt.getTime();
+};

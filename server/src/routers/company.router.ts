@@ -13,12 +13,12 @@ export const companyRouter = Router();
 
 companyRouter.get("/", getCompanies);
 
-companyRouter.get("/name", getCompanyByName);
-
-companyRouter.post("/", addCompany);
-
-companyRouter.put("/:companyId", updateCompany);
+companyRouter.get("/name/:companyName", getCompanyByName);
 
 companyRouter.get("/id/:companyId", getCompanyById);
 
-companyRouter.get("/recruiter-login", recruiterLogin)
+companyRouter.post("/", addCompany);
+
+companyRouter.put("/id/:companyId", updateCompany);
+
+companyRouter.get("/recruiter-login", recruiterLogin);

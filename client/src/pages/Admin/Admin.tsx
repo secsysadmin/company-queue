@@ -1,32 +1,46 @@
-import NewCompany from "../../components/Admin/NewCompany";
-import NewQueue from "../../components/Admin/NewQueue";
-import Banner from "../../components/Banner";
 import { useEffect, useState } from "react";
-import { getCompanyNames } from "../../utils/utils";
+import axios from "axios";
+import { Box } from "@chakra-ui/react";
+
+import Banner from "../../components/Banner";
+import AddNewCompanyForm from "../../components/Admin/AddNewCompanyForm";
+import AddNewQueueForm from "../../components/Admin/AddNewQueueForm";
 
 export default function Admin() {
-    const [companyNames, setCompanyNames] = useState<{ name: string, id: string }[]>();
+  const [companies, setCompanies] = useState<{ name: string; id: string }[]>();
 
-    useEffect(() => {
-        getCompanyNames().then((res) => {
-            setCompanyNames(res);
-        })
-    }, []);
+  useEffect(() => {
+    axios.get("/company").then((res) => {
+      const companies = res.data.map((company: any) => {
+        return { name: company.name, id: company._id };
+      });
 
-    return (<>
-        <Banner title='Admin Panel'></Banner>
-        {/*@ts-ignore*/}
-        <div style={statusDivStyle}>
-            <NewCompany />
-            <hr style={{marginTop: '10px', borderColor: 'black', borderTopWidth: '1px', width: '50vw'}}/>
-            <NewQueue companyArray={companyNames!} />
-        </div>
-    </>);
+      setCompanies(companies);
+    });
+  }, []);
+
+  return (
+    <>
+      <Banner title="Admin Panel"></Banner>
+      <Box sx={statusDivStyle}>
+        <AddNewCompanyForm />
+        <hr
+          style={{
+            marginTop: "10px",
+            borderColor: "black",
+            borderTopWidth: "1px",
+            width: "50vw",
+          }}
+        />
+        <AddNewQueueForm companyArray={companies!} />
+      </Box>
+    </>
+  );
 }
 
 const statusDivStyle = {
-    marginTop: '1rem',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+  marginTop: "1rem",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
 };
