@@ -1,38 +1,26 @@
 import { Request, Response } from "express";
-import CompanyQueue from "../models/companyQueue.model";
+import QueueModel from "../models/queue.model";
 import { Major } from "../models/major.model";
 
-import {
-  ADMIN_PIN,
-  findHighestLineNumber,
-  getRandomTicketNumber,
-} from "../utils";
+import { getRandomTicketNumber, getWaitTime } from "../utils";
 
 export const joinQueue = async (req: Request, res: Response) => {
-  const { companyName, major, phoneNumber, name } = req.query;
+  const { companyName, major, phoneNumber, name } = req.body;
 
-  if (
-    typeof major != "string" ||
-    !Object.values(Major).includes(major as Major)
-  ) {
-    return res.status(400).send("Major is invalid");
-  }
-
-  // remove all hyphens, spaces, and parenthesis from the phone number
-  const cleanedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
+  const cleanedPhoneNumber = phoneNumber.replace(/[-\s()]/g, "");
 
   // get companyLines for company
-  const companyQueues = await CompanyQueue.find({
+  const queues = await QueueModel.find({
     companyName: companyName,
   });
 
-  // check if companyQueues is empty
-  if (companyQueues.length === 0) {
+  // check if queues is empty
+  if (queues.length === 0) {
     return res.status(400).send("Company is not valid or has no queues.");
   }
 
   // decide which line to put student in
-  const correctQueue = companyQueues.find(queue =>
+  const correctQueue = queues.find((queue) =>
     queue.majors.includes(major as Major)
   );
 
@@ -45,7 +33,7 @@ export const joinQueue = async (req: Request, res: Response) => {
   // check if student is already in any queue
   const studentAlreadyInQueue =
     (
-      await CompanyQueue.find({
+      await QueueModel.find({
         "studentsInLine.phoneNumber": parseInt(cleanedPhoneNumber as string),
       })
     ).length > 0;
@@ -58,7 +46,7 @@ export const joinQueue = async (req: Request, res: Response) => {
   const ticketNumber = getRandomTicketNumber();
 
   // add student to queue and update mongodb
-  await CompanyQueue.findOneAndUpdate(
+  await QueueModel.findOneAndUpdate(
     {
       companyName: companyName,
       lineNumber: correctQueue.lineNumber,
@@ -67,7 +55,7 @@ export const joinQueue = async (req: Request, res: Response) => {
       $push: {
         studentsInLine: {
           name: name,
-          phoneNumber: parseInt(cleanedPhoneNumber as string),
+          phoneNumber: cleanedPhoneNumber,
           ticketNumber: ticketNumber,
           major: major,
           joinedAt: Date.now(),
@@ -78,40 +66,41 @@ export const joinQueue = async (req: Request, res: Response) => {
     { new: true }
   );
 
-  const earliestStudent = correctQueue.studentsInLine.sort(
-    (student1, student2) => {
-      return student1.joinedAt.getTime() - student2.joinedAt.getTime();
-    }
-  )[0] ?? { joinedAt: new Date() };
-  const waitTime = Date.now() - earliestStudent.joinedAt.getTime();
+  const waitTime = await getWaitTime(correctQueue._id.toString());
 
-  return res.status(200).json({ ticketNumber, waitTime, phoneNumber });
+  const numberOfStudentsInLine = correctQueue.studentsInLine.length;
+
+  return res
+    .status(200)
+    .json({ ticketNumber, waitTime, numberOfStudentsInLine });
 };
 
 export const leaveQueue = async (req: Request, res: Response) => {
-  const ticketNumber = req.query.ticketNumber;
+  const ticketNumber = req.params.ticketNumber;
 
-  const companyQueue = await CompanyQueue.findOne({
+  console.log(ticketNumber);
+
+  const queue = await QueueModel.findOne({
     "studentsInLine.ticketNumber": ticketNumber,
   });
 
   // If the company queue is not found, the student is not in any company queue
-  if (!companyQueue) {
+  if (!queue) {
     return res
       .status(404)
       .json({ message: "Student not found in any company queue." });
   }
 
-  const studentIndex = companyQueue.studentsInLine.findIndex(
-    student => student.ticketNumber === ticketNumber
+  const studentIndex = queue.studentsInLine.findIndex(
+    (student) => student.ticketNumber === ticketNumber
   );
 
   // remove student
-  companyQueue.studentsInLine.splice(studentIndex, 1);
+  queue.studentsInLine.splice(studentIndex, 1);
 
-  await companyQueue.save();
+  await queue.save();
 
-  return res.json(companyQueue.studentsInLine);
+  return res.status(200).send();
 };
 
 export const spokenTo = async (req: Request, res: Response) => {
@@ -121,7 +110,7 @@ export const spokenTo = async (req: Request, res: Response) => {
 export const notifyNext = async (req: Request, res: Response) => {
   const { companyName, lineNumber } = req.query;
 
-  const correctQueue = await CompanyQueue.find({
+  const correctQueue = await QueueModel.find({
     companyName: companyName,
     lineNumber: lineNumber,
   });
@@ -134,12 +123,13 @@ export const notifyNext = async (req: Request, res: Response) => {
   );
 
   let studentsToNotify = [];
-
-  for (let i = 0; i < Math.min(5, studentsInLine.length); i++) {
+  let i = 0;
+  while (studentsToNotify.length < 5 && i < studentsInLine.length) {
     if (studentsInLine[i].notifiedAt == null) {
       studentsInLine[i].notifiedAt = new Date();
       studentsToNotify.push(studentsInLine[i].phoneNumber);
     }
+    i++;
   }
 
   res.json(studentsToNotify);
@@ -166,21 +156,20 @@ export const notifyNext = async (req: Request, res: Response) => {
 };
 
 export const createQueue = async (req: Request, res: Response) => {
-  const { adminPin, companyName, majors, companyID } = req.body;
-  if (adminPin != ADMIN_PIN) {
+  const { adminPin, companyName, majors, companyID, lineNumber } = req.body;
+
+  if (adminPin != process.env.ADMIN_PIN) {
     return res.status(400).json("invalid admin request").send();
   }
-  const newLineNumber = (await findHighestLineNumber(String(companyName))) + 1;
-  const majorsString = decodeURIComponent(majors);
-  const majorsList = majorsString.split(",");
 
-  const newQueue = new CompanyQueue({
+  const newQueue = new QueueModel({
     companyName: String(companyName),
     companyID: String(companyID),
-    lineNumber: newLineNumber,
-    majors: majorsList,
+    lineNumber: Number(lineNumber),
+    majors,
     studentsInLine: [],
   });
+
   newQueue
     .save()
     .then(() => res.status(200).send())
@@ -189,32 +178,55 @@ export const createQueue = async (req: Request, res: Response) => {
     );
 };
 
-export const checkStudent = async (req: Request, res: Response) => {
+export const getQueueForStudent = async (req: Request, res: Response) => {
   const { phoneNumber } = req.query;
   const cleanedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
 
-  const companyQueue = await CompanyQueue.findOne({
+  const queue = await QueueModel.findOne({
     "studentsInLine.phoneNumber": parseInt(cleanedPhoneNumber as string),
   });
 
   // If the company queue is not found, the student is not in any company queue
-  if (!companyQueue) {
-    return res.send("false");
-  } else {
-    return res.send("true");
+  if (!queue) {
+    return res
+      .status(404)
+      .json({ message: "Student not found in any company queue." });
   }
+
+  const student = queue.studentsInLine.find(
+    (student) => student.phoneNumber === cleanedPhoneNumber
+  );
+
+  if (!student) {
+    return res.status(404).json({ message: "Student not found in queue." });
+  }
+
+  return res.status(200).json({
+    companyName: queue.companyName,
+    lineNumber: queue.lineNumber,
+    ticketNumber: student?.ticketNumber,
+    waitTime: await getWaitTime(
+      queue._id.toString(),
+      student.joinedAt.getTime()
+    ),
+    major: student.major,
+    name: student.name,
+  });
 };
 
-export const getQueues = async (req: Request, res: Response) => {
-  const { id } = req.query;
+export const getQueuesForCompany = async (req: Request, res: Response) => {
+  const companyId = req.params.companyId;
+
   try {
-    const companyQueues = await CompanyQueue.find({
-      companyID: id,
+    const companyQueues = await QueueModel.find({
+      companyID: companyId,
     });
+
     if (companyQueues.length === 0) {
-      return res.status(400).send("no queue found");
+      return res.status(400).json({ message: "no queue found" });
     }
-    return res.status(200).send(companyQueues);
+
+    return res.status(200).json(companyQueues);
   } catch {
     return res
       .status(500)
@@ -222,14 +234,17 @@ export const getQueues = async (req: Request, res: Response) => {
   }
 };
 
-export const getQueue = async (req: Request, res: Response) => {
-  const { id } = req.query;
+export const getQueueById = async (req: Request, res: Response) => {
+  const queueId = req.params.queueId;
+
   try {
-    const companyQueue = await CompanyQueue.findById(id);
-    if (companyQueue == undefined) {
+    const queue = await QueueModel.findById(queueId);
+
+    if (queue == undefined) {
       return res.status(400).send("no queue found");
     }
-    return res.status(200).send(companyQueue);
+
+    return res.status(200).json(queue);
   } catch {
     return res
       .status(500)

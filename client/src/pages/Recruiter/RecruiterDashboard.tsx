@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import {
   Stack,
   Heading,
@@ -9,14 +12,15 @@ import {
   Card,
   CardHeader,
   CardBody,
+  Box,
 } from "@chakra-ui/react";
+
+import { Company, Queue } from "../../utils/interfaces";
+
 import Banner from "../../components/Banner";
-import QueueLine from "../../components/QueueLine"; // Import the QueueLine component
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Company, CompanyQueue } from "../../utils/interfaces";
-import { SERVER_ENDPOINT } from "../../utils/consts";
+import QueueLine from "../../components/Recruiter/QueueLine";
 import useRecruiterLogin from "../../utils/useRecruiterLogin";
+import axios from "axios";
 
 const tableCellStyle = {
   padding: "8px",
@@ -26,44 +30,32 @@ const tableCellStyle = {
 export default function RecruiterDashboard() {
   const navigate = useNavigate();
   const [company, setCompany] = useState<Company>();
-  const [companyQueues, setCompanyQueues] = useState<CompanyQueue[]>();
+  const [companyQueues, setCompanyQueues] = useState<Queue[]>();
 
-  // manage login state
   const { companyID } = useRecruiterLogin();
 
   useEffect(() => {
     if (companyID == undefined) {
       return;
     }
-    const companyUrl = SERVER_ENDPOINT + `/api/company/id/${companyID}`;
-    fetch(companyUrl)
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        setCompany(data);
-      });
 
-    const url =
-      SERVER_ENDPOINT + `/api/company-queue/get-queues?id=${companyID}`;
-    fetch(url)
-      .then(res => {
-        return res.json();
-      })
-      .then(data => {
-        setCompanyQueues(data);
-      });
+    axios.get("/company/id/" + companyID).then((res) => {
+      setCompany(res.data);
+    });
+
+    axios.get("/queue/company/" + companyID).then((res) => {
+      setCompanyQueues(res.data);
+    });
   }, [companyID]);
 
-  function handleViewQueue(queue: CompanyQueue) {
+  function handleViewQueue(queue: Queue) {
     navigate(`/recruiter/queue?companyName=${company?.name}&id=${queue._id}`);
   }
 
   return (
     <>
-      <Banner title='Company Queue for Recruiters' />
-      {/*@ts-ignore*/}
-      <div style={statusDivStyle}>
+      <Banner title="Company Queue for Recruiters" />
+      <Box sx={statusDivStyle}>
         <Stack>
           <Heading>{company?.name}</Heading>
           <Card backgroundColor={"blackAlpha.100"}>
@@ -76,9 +68,10 @@ export default function RecruiterDashboard() {
             <CardBody>
               <TableContainer>
                 <Table
-                  variant='striped'
-                  colorScheme='blackAlpha'
-                  style={{ margin: "0", padding: "0" }}>
+                  variant="striped"
+                  colorScheme="blackAlpha"
+                  style={{ margin: "0", padding: "0" }}
+                >
                   <Thead>
                     <tr>
                       <Th style={tableCellStyle}>Queue Major</Th>
@@ -101,7 +94,7 @@ export default function RecruiterDashboard() {
             </CardBody>
           </Card>
         </Stack>
-      </div>
+      </Box>
     </>
   );
 }

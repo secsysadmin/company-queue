@@ -1,8 +1,9 @@
-import { Card, Text, Input, Button, Stack, CardHeader } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { PIN_LENGTH, SERVER_ENDPOINT } from "../../utils/consts";
+import axios from "axios";
+import { Card, Text, Input, Button, Stack, CardHeader } from "@chakra-ui/react";
+import { PIN_LENGTH } from "../../utils/consts";
 
-export default function NewCompany() {
+export default function AddNewCompanyForm() {
   const [companyName, setCompanyName] = useState(String);
   const [booth, setBooth] = useState(String);
   const [pin, setPin] = useState(String);
@@ -17,19 +18,12 @@ export default function NewCompany() {
   }, [companyName, booth, pin]);
 
   const createNewCompany = async () => {
-    const url = `${SERVER_ENDPOINT}/api/company/`;
-    const body = {
+    await axios.post("/company", {
       name: companyName,
-      pin: pin,
-      booth: booth,
-    };
-    fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(body),
+      booth,
+      pin,
     });
+
     setCompanyName("");
     setBooth("");
     setPin("");
@@ -43,19 +37,23 @@ export default function NewCompany() {
         </CardHeader>
         <Stack>
           <Input
-            placeholder='Company Name'
-            onChange={ev => setCompanyName(ev.target.value)}></Input>
+            placeholder="Company Name"
+            onChange={(ev) => setCompanyName(ev.target.value)}
+          ></Input>
           <Input
-            placeholder='Booth'
-            onChange={ev => setBooth(ev.target.value)}></Input>
+            placeholder="Booth"
+            onChange={(ev) => setBooth(ev.target.value)}
+          ></Input>
           <Input
-            placeholder='Pin'
-            onChange={ev => setPin(ev.target.value)}></Input>
+            placeholder="Pin"
+            onChange={(ev) => setPin(ev.target.value)}
+          ></Input>
           <Button
             backgroundColor={"red.900"}
-            color='white'
+            color="white"
             isDisabled={!canSubmit}
-            onClick={ev => createNewCompany()}>
+            onClick={() => createNewCompany()}
+          >
             Submit
           </Button>
         </Stack>

@@ -35,7 +35,7 @@ export interface StudentInLine {
   notifiedAt: Date;
 }
 
-export interface CompanyQueue {
+export interface Queue {
   _id: string;
   companyName: string;
   companyID: string;

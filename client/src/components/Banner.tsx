@@ -22,11 +22,7 @@ export default function Banner(props: BannerProps) {
   return (
     <>
       <div style={BannerStyle}>
-        <img
-          style={logoStyle}
-          src='../../public/media/secbasic.png'
-          alt='SEC Logo'
-        />
+        <img style={logoStyle} src="/media/secbasic.png" alt="SEC Logo" />
         <h1>{props.title}</h1>
       </div>
     </>

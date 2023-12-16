@@ -12,4 +12,4 @@ const CompanySchema: Schema = new Schema({
   booth: { type: String, required: true },
 });
 
-export const companyModel = mongoose.model<Company>("Company", CompanySchema);
+export const CompanyModel = mongoose.model<Company>("Company", CompanySchema);

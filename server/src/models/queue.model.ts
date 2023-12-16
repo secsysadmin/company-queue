@@ -3,14 +3,14 @@ import { Major } from "./major.model";
 
 export interface StudentInLine {
   name: string;
-  phoneNumber: number;
+  phoneNumber: string;
   major: Major;
   ticketNumber: string;
   joinedAt: Date;
   notifiedAt: Date;
 }
 
-export interface ICompanyQueue extends Document {
+export interface Queue {
   companyName: string;
   companyID: Schema.Types.ObjectId;
   lineNumber: number;
@@ -18,9 +18,9 @@ export interface ICompanyQueue extends Document {
   studentsInLine: StudentInLine[];
 }
 
-const companyQueueSchema = new Schema<ICompanyQueue>({
+const QueueSchema = new Schema<Queue>({
   companyName: { type: String, required: true },
-  companyID: { type: Schema.Types.ObjectId, required: true },
+  companyID: { type: Schema.Types.ObjectId, required: true, ref: "Company" },
   lineNumber: { type: Number, required: true },
   majors: [{ type: String, enum: Object.values(Major) }],
   studentsInLine: [
@@ -35,9 +35,6 @@ const companyQueueSchema = new Schema<ICompanyQueue>({
   ],
 });
 
-const CompanyQueue = mongoose.model<ICompanyQueue>(
-  "CompanyQueue",
-  companyQueueSchema
-);
+const QueueModel = mongoose.model<Queue>("Queue", QueueSchema);
 
-export default CompanyQueue;
+export default QueueModel;
