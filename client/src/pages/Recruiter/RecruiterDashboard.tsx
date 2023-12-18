@@ -54,10 +54,10 @@ export default function RecruiterDashboard() {
 
   return (
     <>
-      <Banner title="Company Queue for Recruiters" />
+      <Banner title={`${company?.name}'s Dashboard`} />
       <Box sx={statusDivStyle}>
         <Stack>
-          <Heading>{company?.name}</Heading>
+          <Heading textAlign="center">{company?.name}</Heading>
           <Card backgroundColor={"blackAlpha.100"}>
             <CardHeader>
               <Heading size={"md"}>

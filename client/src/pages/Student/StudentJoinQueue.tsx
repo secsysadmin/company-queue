@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   FormControl,
+  Heading,
 } from "@chakra-ui/react";
 
 import { Major } from "../../utils/interfaces";
@@ -71,23 +72,32 @@ export default function StudentJoinQueue() {
         alignItems: "center",
       }}
     >
-      <Banner title="Queue Login"></Banner>
-      <FormControl w={"50%"}>
-        <Stack marginTop="2em" spacing={3}>
-          <Text fontSize="xl">Login to {company}'s queue</Text>
+      <Banner title="Join Queue"></Banner>
+      <FormControl w={"60%"}>
+        <Stack marginTop="11em" spacing={3}>
+          <Heading fontSize="xl" textAlign="center" fontWeight="bold">
+            Join{" "}
+            <Text as="span" color="red.900">
+              {company}'s{' '}
+            </Text>
+            Queue
+          </Heading>
           <Input
             placeholder="Name"
             variant="filled"
+            fontWeight="semibold"
             onChange={(ev) => setName(ev.target.value)}
           ></Input>
           <Input
             placeholder="Phone Number"
             variant="filled"
+            fontWeight="semibold"
             onChange={(ev) => setPhoneNumber(ev.target.value)}
           ></Input>
           <Select
             placeholder="Major"
             variant="filled"
+            fontWeight="semibold"
             onChange={(ev) => setMajor(ev.target.value as Major)}
           >
             {Object.values(Major).map((major, index) => (

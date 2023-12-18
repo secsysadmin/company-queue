@@ -1,5 +1,5 @@
 import Banner from "../../components/Banner";
-import { Stack, Input, Button, Text } from "@chakra-ui/react";
+import { Stack, Input, Button, Text, Heading } from "@chakra-ui/react";
 import { useState } from "react";
 import { PIN_LENGTH } from "../../utils/consts";
 import { deleteCookie, setCookie } from "../../utils/utils";
@@ -38,11 +38,12 @@ export default function RecruiterLogin() {
         }}
       >
         <Banner title="Recruiter Login"></Banner>
-        <Stack minWidth="30vw">
-          <Text marginTop="3em">Enter Your Company Queue Pin</Text>
+        <Stack minWidth="30vw" spacing={3} maxWidth="80vw">
+          <Heading marginTop="11em" fontSize="xl">Enter Your Company Queue Pin</Heading>
           <Input
             variant="filled"
             placeholder="Pin"
+            fontWeight="semibold"
             onChange={(ev) => setPin(ev.target.value)}
           ></Input>
           <Button

@@ -12,6 +12,8 @@ const BannerStyle = {
 const logoStyle = {
   maxWidth: "20vw",
   width: "calc(20% - 8vw)",
+  marginTop: "0.5vh",
+  marginRight: "2vw",
 };
 
 interface BannerProps {
