@@ -118,7 +118,7 @@ export default function QueuePage() {
                       queue.studentsInLine.map((student, index) => (
                         <QueueStudent
                           key={index}
-                          number={student.phoneNumber}
+                          number={index + 1}
                           major={student.major}
                           name={student.ticketNumber}
                           onRemoveClick={() =>
