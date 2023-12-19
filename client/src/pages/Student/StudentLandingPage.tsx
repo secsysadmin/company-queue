@@ -11,7 +11,7 @@ export default function StudentLandingPage() {
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        height="100vh"
+        height="90vh"
       >
         <Text textAlign="center" fontSize="lg">
           Find a participating company and scan their company queue QR to join a queue
