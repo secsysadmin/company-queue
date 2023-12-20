@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import QueueModel from "../models/queue.model";
 import { Major } from "../models/major.model";
-
 import { getRandomTicketNumber, getWaitTime } from "../utils";
+
+const accountSid = process.env.TWILIO_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+//const twilio_client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 
 export const joinQueue = async (req: Request, res: Response) => {
   const { companyName, major, phoneNumber, name } = req.body;
@@ -132,27 +135,53 @@ export const notifyNext = async (req: Request, res: Response) => {
     i++;
   }
 
-  res.json(studentsToNotify);
+  for (const phone_number of studentsToNotify) {
+    const twilio_client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+    twilio_client.messages
+      .create({
+        body: `It is now your turn in ${companyName}'s line`,
+        from: "+18559314118",
+        to: "+1" + phone_number,
+      })
+      .then((message: { sid: string }) => console.log(message.sid));
+  }
+};
 
-  // const accountSid = process.env.TWILIO_ACCOUNT_SID;
-  // const authToken = process.env.TWILIO_AUTH_TOKEN;
+export const notifyStudent = async (req: Request, res: Response) => {
+  const { phoneNumber, companyName } = req.query;
+  const cleanedPhoneNumber = (phoneNumber as string).replace(/[-\s()]/g, "");
 
-  // const accountSid = "ACf3619a02abe3e565809b1b6ad97e9cfb";
-  // const authToken = "6a06d1074d18eaec38a4d592cac415c2";
-  // const client = require("twilio")(accountSid, authToken);
+  const queue = await QueueModel.findOne({
+    "studentsInLine.phoneNumber": parseInt(cleanedPhoneNumber as string),
+  });
 
-  // var numbersToMessage = ["+15122025107", "+15126219469", "+15127961325"];
+  // If the company queue is not found, the student is not in any company queue
+  if (!queue) {
+    return res
+      .status(404)
+      .json({ message: "Student not found in any company queue." });
+  }
 
-  // numbersToMessage.forEach(function (number) {
-  //   var message = client.messages
-  //     .create({
-  //       body: "Hola coma estas senor :)",
-  //       from: "+18662936588",
-  //       to: number,
-  //     })
-  //     .then((message: { status: string }) => console.log(message.status))
-  //     .catch((error: any) => console.error(error));
-  // });
+  for (let i = 0; i < queue.studentsInLine.length; i++){
+    if (queue.studentsInLine[i].phoneNumber == cleanedPhoneNumber){
+      const twilio_client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+      twilio_client.messages
+      .create({
+        body: `It is now your turn in ${companyName}'s line`,
+        from: "+18559314118",
+        to: "+1" + String(cleanedPhoneNumber),
+      })
+      .then((message: { sid: string }) => console.log(message.sid)).catch(() => {
+        return res.status(500).send('error sending message');
+      });
+
+      queue.studentsInLine[i].notifiedAt = new Date();
+      queue.save();
+      break;
+    }
+  }
+  return res.status(200).send("successfully notified student");
+  
 };
 
 export const createQueue = async (req: Request, res: Response) => {

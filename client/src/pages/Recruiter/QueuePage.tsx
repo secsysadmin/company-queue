@@ -30,7 +30,7 @@ const tableCellStyle = {
 };
 
 export default function QueuePage() {
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [errorText, setErrorText] = useState<string>();
 
@@ -50,6 +50,7 @@ export default function QueuePage() {
     axios
       .get("/queue/id/" + queueID)
       .then((res) => {
+        console.log(res.data)
         setQueue(res.data);
       })
       .catch((error) => {
@@ -64,11 +65,23 @@ export default function QueuePage() {
         update();
       })
       .catch((error) => {
-        setErrorText(JSON.stringify(error));
+        setErrorText(JSON.stringify(error.message));
       });
   };
 
+  const handleNotifyStudent = (phoneNumber: string) => {
+    const params = `?companyName=${companyName}&phoneNumber=${phoneNumber}`;
+
+    axios.post('/queue/notify-student' + params).then(() => {
+      update();
+    }).catch((error) => {
+      setErrorText(JSON.stringify(error.message));
+    })
+
+  }
+
   useEffect(() => {
+    setErrorText(undefined);
     update();
   }, []);
 
@@ -110,6 +123,7 @@ export default function QueuePage() {
                       <Th style={tableCellStyle}>#</Th>
                       <Th style={tableCellStyle}>Major</Th>
                       <Th style={tableCellStyle}>Name</Th>
+                      <Th style={tableCellStyle}>Notify</Th>
                       <Th style={tableCellStyle}>Remove</Th>
                     </Tr>
                   </Thead>
@@ -121,6 +135,8 @@ export default function QueuePage() {
                           number={index + 1}
                           major={student.major}
                           name={student.ticketNumber}
+                          notifiedAt={student.notifiedAt}
+                          notifyStudent={() => handleNotifyStudent(String(student.phoneNumber))}
                           onRemoveClick={() =>
                             handleRemoveStudent(student.ticketNumber)
                           }

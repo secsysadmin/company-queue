@@ -89,7 +89,7 @@ export default function StudentJoinQueue() {
             onChange={(ev) => setName(ev.target.value)}
           ></Input>
           <Input
-            placeholder="Phone Number"
+            placeholder="Phone Number (ex. 9798471787)"
             variant="filled"
             fontWeight="semibold"
             onChange={(ev) => setPhoneNumber(ev.target.value)}
