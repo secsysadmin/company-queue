@@ -280,3 +280,13 @@ export const getQueueById = async (req: Request, res: Response) => {
       .send("db query error, possibly incorrectly formatted data");
   }
 };
+
+export const closeQueue = async (req: Request, res: Response) => {
+  const {companyName, lineNumber} = req.params;
+
+  QueueModel.findOneAndDelete({companyName, lineNumber}).then(() => {
+    return res.status(200).send();
+  }).catch(() => {
+    return res.status(500).send("could not close queue");
+  })
+}

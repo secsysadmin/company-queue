@@ -23,6 +23,7 @@ import { Queue } from "../../utils/interfaces";
 import QueueStudent from "../../components/Recruiter/QueueStudent";
 import useRecruiterLogin from "../../utils/useRecruiterLogin";
 import axios from "axios";
+import CloseQueueForm from "../../components/Recruiter/CloseQueueForm";
 
 const tableCellStyle = {
   padding: "8px",
@@ -37,6 +38,8 @@ export default function QueuePage() {
   const companyName = searchParams.get("companyName");
   const queueID = searchParams.get("id");
   const [queue, setQueue] = useState<Queue>();
+
+  const [closeQueueEnabled, setCloseQueueEnabled] = useState<boolean>(false);
 
   // manage login state
   useRecruiterLogin();
@@ -105,12 +108,13 @@ export default function QueuePage() {
               <Heading size={"md"}>
                 {queue?.majors.join(", ")} Line
                 <div style={{ float: "right" }}>
-                  <Button colorScheme="red" size="sm">
+                  <Button colorScheme="red" size="sm" onClick={() => setCloseQueueEnabled(!closeQueueEnabled)}>
                     Close Queue
                   </Button>
                 </div>
               </Heading>
             </CardHeader>
+            <CloseQueueForm companyName={companyName!} enabled={closeQueueEnabled} lineNumber={queue?.lineNumber}/>
             <CardBody>
               <TableContainer whiteSpace={"normal"}>
                 <Table
