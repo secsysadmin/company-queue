@@ -31,7 +31,7 @@ export default function AddNewCompanyForm() {
 
   return (
     <div>
-      <Card>
+      <Card width={"65vw"}>
         <CardHeader>
           <Text size={"lg"}>Add a new company</Text>
         </CardHeader>
@@ -45,7 +45,7 @@ export default function AddNewCompanyForm() {
             onChange={(ev) => setBooth(ev.target.value)}
           ></Input>
           <Input
-            placeholder="Pin"
+            placeholder="PIN"
             onChange={(ev) => setPin(ev.target.value)}
           ></Input>
           <Button

@@ -44,9 +44,9 @@ export default function AddNewQueueForm(props: NewQueueProps) {
 
   return (
     <div>
-      <Card>
+      <Card width={"65vw"}>
         <CardHeader>
-          <Text size={"lg"}>Add a new queue</Text>
+          <Text size={"lg"}>Add new queue to company</Text>
         </CardHeader>
         <Stack>
           <Select
@@ -62,12 +62,12 @@ export default function AddNewQueueForm(props: NewQueueProps) {
 
           <Input
             type="number"
-            placeholder="line number"
+            placeholder="Line Number"
             onChange={(ev) => setLineNumber(parseInt(ev.target.value))}
           ></Input>
 
           <Input
-            placeholder="admin pin"
+            placeholder="Admin PIN"
             onChange={(ev) => setAdminPin(ev.target.value)}
           ></Input>
 

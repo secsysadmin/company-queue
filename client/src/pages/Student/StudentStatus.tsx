@@ -55,21 +55,25 @@ export default function StudentStatus() {
 
   return (
     <>
-      <Banner title="Company Queue"></Banner>
+      <Banner title="Your Status"></Banner>
       <Box sx={statusDivStyle}>
         <Stack>
-          <Heading>
-            You are in <b>{companyName}'s</b> line
+        <Heading fontSize="xl" textAlign="center" fontWeight="bold">
+            You are in{" "}
+            <Text as="span" color="red.900">
+              {companyName}'s{' '}
+            </Text>
+            Queue
           </Heading>
-          <Card backgroundColor={"red.900"}>
+          <Card backgroundColor={"gray.100"}>
             <CardHeader>
-              <Heading color={"white"} size={"md"}>
+              <Heading color={"black"} size={"md"}>
                 Your Information:
               </Heading>
             </CardHeader>
             <CardBody>
               <Stack>
-                <Heading size={"sm"} color={"white"}>
+                <Heading size={"sm"} color={"red.900"}>
                   Name
                 </Heading>
                 <Text
@@ -83,7 +87,7 @@ export default function StudentStatus() {
                   {name}
                 </Text>
 
-                <Heading size={"sm"} color={"white"}>
+                <Heading size={"sm"} color={"red.900"}>
                   Phone Number
                 </Heading>
                 <Text
@@ -97,7 +101,7 @@ export default function StudentStatus() {
                   {phoneNumber}
                 </Text>
 
-                <Heading size={"sm"} color={"white"}>
+                <Heading size={"sm"} color={"red.900"}>
                   Major
                 </Heading>
                 <Text
@@ -111,7 +115,7 @@ export default function StudentStatus() {
                   {major}
                 </Text>
 
-                <Heading size={"sm"} color={"white"}>
+                <Heading size={"sm"} color={"red.900"}>
                   Line Number
                 </Heading>
                 <Text
@@ -125,7 +129,7 @@ export default function StudentStatus() {
                   {lineNumber}
                 </Text>
 
-                <Heading size={"sm"} color={"white"}>
+                <Heading size={"sm"} color={"red.900"}>
                   Wait Time
                 </Heading>
                 <Text
@@ -139,7 +143,7 @@ export default function StudentStatus() {
                   {Math.floor(waitTime / 1000 / 60)} minutes
                 </Text>
 
-                <Heading size={"sm"} color={"white"}>
+                <Heading size={"sm"} color={"red.900"}>
                   Exit Code
                 </Heading>
                 <Text
@@ -173,4 +177,8 @@ const statusDivStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
+  height: "100vh",
+  width: "80%",
+  maxWidth: "600px",
+  margin: "2rem auto"
 };

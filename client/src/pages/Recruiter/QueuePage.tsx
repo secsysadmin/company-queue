@@ -74,10 +74,10 @@ export default function QueuePage() {
 
   return (
     <>
-      <Banner title="Company Queue for Recruiters"></Banner>
+      <Banner title="Queue for Recruiters"></Banner>
       <Box sx={statusDivStyle}>
-        <Stack width={"50vw"} maxWidth={"95vw"}>
-          <Heading>Company: {companyName}</Heading>
+        <Stack width={"85vw"} maxWidth={"95vw"} spacing={3}>
+          <Heading textAlign={"center"}>{companyName}</Heading>
           <Button
             minHeight={"50px"}
             backgroundColor={"red.900"}
@@ -99,7 +99,7 @@ export default function QueuePage() {
               </Heading>
             </CardHeader>
             <CardBody>
-              <TableContainer>
+              <TableContainer whiteSpace={"normal"}>
                 <Table
                   variant="striped"
                   colorScheme="blackAlpha"
@@ -118,7 +118,7 @@ export default function QueuePage() {
                       queue.studentsInLine.map((student, index) => (
                         <QueueStudent
                           key={index}
-                          number={student.phoneNumber}
+                          number={index + 1}
                           major={student.major}
                           name={student.ticketNumber}
                           onRemoveClick={() =>

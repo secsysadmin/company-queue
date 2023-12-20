@@ -27,8 +27,8 @@ export default function Admin() {
         <hr
           style={{
             marginTop: "10px",
-            borderColor: "black",
-            borderTopWidth: "1px",
+            borderColor: "white",
+            borderTopWidth: "50px",
             width: "50vw",
           }}
         />
