@@ -33,4 +33,4 @@ queueRouter.post("/notify-student", notifyStudent);
 
 queueRouter.get("/student", getQueueForStudent);
 
-queueRouter.delete("/close-queue/:companyName/:lineNumber", closeQueue)
+queueRouter.delete("/close-queue/:companyName/:lineNumber", closeQueue);

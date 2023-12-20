@@ -136,7 +136,10 @@ export const notifyNext = async (req: Request, res: Response) => {
   }
 
   for (const phone_number of studentsToNotify) {
-    const twilio_client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+    const twilio_client = require("twilio")(
+      process.env.TWILIO_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
     twilio_client.messages
       .create({
         body: `It is now your turn in ${companyName}'s line`,
@@ -162,18 +165,22 @@ export const notifyStudent = async (req: Request, res: Response) => {
       .json({ message: "Student not found in any company queue." });
   }
 
-  for (let i = 0; i < queue.studentsInLine.length; i++){
-    if (queue.studentsInLine[i].phoneNumber == cleanedPhoneNumber){
-      const twilio_client = require('twilio')(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
+  for (let i = 0; i < queue.studentsInLine.length; i++) {
+    if (queue.studentsInLine[i].phoneNumber == cleanedPhoneNumber) {
+      const twilio_client = require("twilio")(
+        process.env.TWILIO_SID,
+        process.env.TWILIO_AUTH_TOKEN
+      );
       twilio_client.messages
-      .create({
-        body: `It is now your turn in ${companyName}'s line`,
-        from: "+18559314118",
-        to: "+1" + String(cleanedPhoneNumber),
-      })
-      .then((message: { sid: string }) => console.log(message.sid)).catch(() => {
-        return res.status(500).send('error sending message');
-      });
+        .create({
+          body: `It is now your turn in ${companyName}'s line`,
+          from: "+18559314118",
+          to: "+1" + String(cleanedPhoneNumber),
+        })
+        .then((message: { sid: string }) => console.log(message.sid))
+        .catch(() => {
+          return res.status(500).send("error sending message");
+        });
 
       queue.studentsInLine[i].notifiedAt = new Date();
       queue.save();
@@ -181,7 +188,6 @@ export const notifyStudent = async (req: Request, res: Response) => {
     }
   }
   return res.status(200).send("successfully notified student");
-  
 };
 
 export const createQueue = async (req: Request, res: Response) => {
@@ -282,11 +288,13 @@ export const getQueueById = async (req: Request, res: Response) => {
 };
 
 export const closeQueue = async (req: Request, res: Response) => {
-  const {companyName, lineNumber} = req.params;
+  const { companyName, lineNumber } = req.params;
 
-  QueueModel.findOneAndDelete({companyName, lineNumber}).then(() => {
-    return res.status(200).send();
-  }).catch(() => {
-    return res.status(500).send("could not close queue");
-  })
-}
+  QueueModel.findOneAndDelete({ companyName, lineNumber })
+    .then(() => {
+      return res.status(200).send();
+    })
+    .catch(() => {
+      return res.status(500).send("could not close queue");
+    });
+};
