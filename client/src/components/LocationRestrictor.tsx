@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from "react";
-import LocationError from "../pages/LocationError";
+// import LocationError from "../pages/LocationError";
 
 interface Location {
   latitude: number;
