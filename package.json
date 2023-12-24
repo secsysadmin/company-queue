@@ -1,0 +1,14 @@
+{
+  "name": "sec-company-queue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install": "cd client && npm install --dev && cd ../server && npm install --dev",
+    "build": "cd client && npm run build && cd ../server && npm run build",
+    "start": "cd server && npm start",
+    "dev": "npx concurrently \"cd client && yarn dev\" \"cd server && yarn dev\""
+  },
+  "author": "",
+  "license": "ISC"
+}
