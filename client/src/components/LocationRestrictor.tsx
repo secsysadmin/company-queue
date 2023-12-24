@@ -43,6 +43,14 @@ const LocationRestrictor: React.FC<LocationRestrictorProps> = ({
     }
   }, [targetLocation, radius]);
 
+  // ignore location restrictions in development or if flagged off
+  if (
+    import.meta.env.DEV ||
+    import.meta.env.VITE_LOCATION_RESTRICTIONS === "off"
+  ) {
+    return <>{children}</>;
+  }
+
   if (isWithinRadius === null) {
     return <div>Loading...</div>;
   }
