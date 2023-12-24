@@ -1,5 +1,5 @@
 import React, { ReactNode, useEffect, useState } from "react";
-// import LocationError from "../pages/LocationError";
+import LocationError from "../pages/LocationError";
 
 interface Location {
   latitude: number;
@@ -47,9 +47,7 @@ const LocationRestrictor: React.FC<LocationRestrictorProps> = ({
     return <div>Loading...</div>;
   }
 
-  return <>{children}</>;
-
-  // return isWithinRadius ? <>{children}</> : LocationError();
+  return isWithinRadius ? <>{children}</> : LocationError();
 };
 
 // Haversine formula to calculate the distance between two points on the Earth
