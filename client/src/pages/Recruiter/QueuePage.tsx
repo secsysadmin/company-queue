@@ -23,6 +23,7 @@ import { Queue } from "../../utils/interfaces";
 import QueueStudent from "../../components/Recruiter/QueueStudent";
 import useRecruiterLogin from "../../utils/useRecruiterLogin";
 import axios from "axios";
+import CloseQueueForm from "../../components/Recruiter/CloseQueueForm";
 
 const tableCellStyle = {
   padding: "8px",
@@ -30,13 +31,15 @@ const tableCellStyle = {
 };
 
 export default function QueuePage() {
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [errorText, setErrorText] = useState<string>();
 
   const companyName = searchParams.get("companyName");
   const queueID = searchParams.get("id");
   const [queue, setQueue] = useState<Queue>();
+
+  const [closeQueueEnabled, setCloseQueueEnabled] = useState<boolean>(false);
 
   // manage login state
   useRecruiterLogin();
@@ -64,11 +67,25 @@ export default function QueuePage() {
         update();
       })
       .catch((error) => {
-        setErrorText(JSON.stringify(error));
+        setErrorText(JSON.stringify(error.message));
+      });
+  };
+
+  const handleNotifyStudent = (phoneNumber: string) => {
+    const params = `?companyName=${companyName}&phoneNumber=${phoneNumber}`;
+
+    axios
+      .post("/queue/notify-student" + params)
+      .then(() => {
+        update();
+      })
+      .catch((error) => {
+        setErrorText(JSON.stringify(error.message));
       });
   };
 
   useEffect(() => {
+    setErrorText(undefined);
     update();
   }, []);
 
@@ -92,12 +109,21 @@ export default function QueuePage() {
               <Heading size={"md"}>
                 {queue?.majors.join(", ")} Line
                 <div style={{ float: "right" }}>
-                  <Button colorScheme="red" size="sm">
+                  <Button
+                    colorScheme="red"
+                    size="sm"
+                    onClick={() => setCloseQueueEnabled(!closeQueueEnabled)}
+                  >
                     Close Queue
                   </Button>
                 </div>
               </Heading>
             </CardHeader>
+            <CloseQueueForm
+              companyName={companyName!}
+              enabled={closeQueueEnabled}
+              lineNumber={queue?.lineNumber}
+            />
             <CardBody>
               <TableContainer whiteSpace={"normal"}>
                 <Table
@@ -109,7 +135,8 @@ export default function QueuePage() {
                     <Tr>
                       <Th style={tableCellStyle}>#</Th>
                       <Th style={tableCellStyle}>Major</Th>
-                      <Th style={tableCellStyle}>Name</Th>
+                      <Th style={tableCellStyle}>Code</Th>
+                      <Th style={tableCellStyle}>Notify</Th>
                       <Th style={tableCellStyle}>Remove</Th>
                     </Tr>
                   </Thead>
@@ -121,6 +148,10 @@ export default function QueuePage() {
                           number={index + 1}
                           major={student.major}
                           name={student.ticketNumber}
+                          notifiedAt={student.notifiedAt}
+                          notifyStudent={() =>
+                            handleNotifyStudent(String(student.phoneNumber))
+                          }
                           onRemoveClick={() =>
                             handleRemoveStudent(student.ticketNumber)
                           }

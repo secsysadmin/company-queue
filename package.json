@@ -5,5 +5,5 @@
     "build": "cd client && npm run build && cd ../server && npm run build",
     "start": "cd server && npm start",
     "dev": "npx concurrently \"cd client && npm run dev\" \"cd server && npm run dev\""
-  },
+  }
 }

@@ -29,11 +29,7 @@ export default function StudentStatus() {
   const [waitTime, setWaitTime] = useState(0);
   const [name, setName] = useState("");
 
-  const leaveQueue = async () => {
-    axios.delete("/queue/leave/" + ticketNumber);
-  };
-
-  useEffect(() => {
+  const update = () => {
     if (!phoneNumber) {
       navigate("/student/landing");
     }
@@ -51,6 +47,17 @@ export default function StudentStatus() {
       .catch(() => {
         navigate("/student/landing");
       });
+  };
+
+  const leaveQueue = async () => {
+    axios.delete("/queue/leave/" + ticketNumber).then(() => {
+      update();
+    });
+
+  };
+
+  useEffect(() => {
+    update();
   }, []);
 
   return (
@@ -58,10 +65,10 @@ export default function StudentStatus() {
       <Banner title="Your Status"></Banner>
       <Box sx={statusDivStyle}>
         <Stack>
-        <Heading fontSize="xl" textAlign="center" fontWeight="bold">
+          <Heading fontSize="xl" textAlign="center" fontWeight="bold">
             You are in{" "}
             <Text as="span" color="red.900">
-              {companyName}'s{' '}
+              {companyName}'s{" "}
             </Text>
             Queue
           </Heading>
@@ -180,5 +187,5 @@ const statusDivStyle = {
   height: "100vh",
   width: "80%",
   maxWidth: "600px",
-  margin: "2rem auto"
+  margin: "2rem auto",
 };
