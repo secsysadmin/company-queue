@@ -17,7 +17,6 @@ export default function CloseQueueForm(props: CloseQueueFormProps) {
 
   useEffect(() => {
     const disabled: boolean = typedCompanyName !== props.companyName;
-    console.log(disabled);
     setSubmitDisabled(disabled);
   }, [typedCompanyName, props.companyName]);
 

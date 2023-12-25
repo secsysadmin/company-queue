@@ -53,7 +53,6 @@ export default function QueuePage() {
     axios
       .get("/queue/id/" + queueID)
       .then((res) => {
-        console.log(res.data);
         setQueue(res.data);
       })
       .catch((error) => {
