@@ -16,6 +16,12 @@ export const getCompanyByName = async (req: Request, res: Response) => {
 };
 
 export const addCompany = async (req: Request, res: Response) => {
+  const { adminPin } = req.query;
+
+  if (adminPin != process.env.ADMIN_PIN) {
+    return res.status(400).json("invalid admin request").send();
+  }
+
   try {
     const companyData = req.body as Company;
 

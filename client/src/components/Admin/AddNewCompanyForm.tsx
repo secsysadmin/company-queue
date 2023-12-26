@@ -4,6 +4,7 @@ import { Card, Text, Input, Button, Stack, CardHeader } from "@chakra-ui/react";
 import { PIN_LENGTH } from "../../utils/consts";
 
 export default function AddNewCompanyForm() {
+  const [adminPin, setAdminPin] = useState<string>();
   const [companyName, setCompanyName] = useState(String);
   const [booth, setBooth] = useState(String);
   const [pin, setPin] = useState(String);
@@ -18,7 +19,7 @@ export default function AddNewCompanyForm() {
   }, [companyName, booth, pin]);
 
   const createNewCompany = async () => {
-    await axios.post("/company", {
+    await axios.post("/company?adminPin=" + adminPin, {
       name: companyName,
       booth,
       pin,
@@ -47,6 +48,10 @@ export default function AddNewCompanyForm() {
           <Input
             placeholder="PIN"
             onChange={(ev) => setPin(ev.target.value)}
+          ></Input>
+          <Input
+            placeholder="Admin PIN"
+            onChange={(ev) => setAdminPin(ev.target.value)}
           ></Input>
           <Button
             backgroundColor={"red.900"}

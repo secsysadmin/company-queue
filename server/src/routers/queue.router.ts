@@ -19,7 +19,7 @@ queueRouter.post("/", createQueue);
 
 queueRouter.get("/id/:queueId", getQueueById);
 
-queueRouter.get("/company/:companyId", getQueuesForCompany);
+queueRouter.get("/company/:companyName", getQueuesForCompany);
 
 queueRouter.post("/join", joinQueue);
 

@@ -71,11 +71,25 @@ export default function AddNewQueueForm(props: NewQueueProps) {
             onChange={(ev) => setAdminPin(ev.target.value)}
           ></Input>
 
+          <Button
+            w={"50%"}
+            onClick={() => {
+              if (majors.length != Object.values(Major).length)
+                setMajors(Object.values(Major));
+              else setMajors([] as Major[]);
+            }}
+          >
+            {majors.length != Object.values(Major).length
+              ? "Select All Majors"
+              : "Unselect All Majors"}
+          </Button>
+
           {Object.values(Major).map((major, index) => (
             <Checkbox
               key={index}
               value={major}
               onChange={(e) => handleMajorChange(e.target.checked, major)}
+              isChecked={majors.includes(major)}
             >
               {major}
             </Checkbox>

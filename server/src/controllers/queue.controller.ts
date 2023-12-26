@@ -278,11 +278,11 @@ export const getQueueForStudent = async (req: Request, res: Response) => {
 };
 
 export const getQueuesForCompany = async (req: Request, res: Response) => {
-  const companyId = req.params.companyId;
+  const companyName = req.params.companyName;
 
   try {
     const companyQueues = await QueueModel.find({
-      companyID: companyId,
+      companyName,
     });
 
     if (companyQueues.length === 0) {
