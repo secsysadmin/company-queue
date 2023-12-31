@@ -10,7 +10,7 @@ import {
   Heading,
 } from "@chakra-ui/react";
 
-import { Major } from "../../utils/interfaces";
+import { Major, Queue } from "../../utils/interfaces";
 
 import Banner from "../../components/Banner";
 import axios from "axios";
@@ -26,6 +26,17 @@ export default function StudentJoinQueue() {
 
   const searchParams = new URLSearchParams(location.search);
   const company = searchParams.get("company");
+
+  const [majorOptions, setMajorOptions] = useState<Major[]>([]);
+
+  useEffect(() => {
+    axios.get("/queue/company/" + company).then((res) => {
+      const queues = res.data as Queue[];
+
+      const majors = queues.map((queue: Queue) => queue.majors);
+      setMajorOptions([...new Set<Major>(majors.flat()), Major.MISC]);
+    });
+  }, []);
 
   useEffect(() => {
     if (!company) {
@@ -78,7 +89,7 @@ export default function StudentJoinQueue() {
           <Heading fontSize="xl" textAlign="center" fontWeight="bold">
             Join{" "}
             <Text as="span" color="red.900">
-              {company}'s{' '}
+              {company}'s{" "}
             </Text>
             Queue
           </Heading>
@@ -100,13 +111,13 @@ export default function StudentJoinQueue() {
             fontWeight="semibold"
             onChange={(ev) => setMajor(ev.target.value as Major)}
           >
-            {Object.values(Major).map((major, index) => (
+            {majorOptions.map((major, index) => (
               <option value={major} key={index}>
                 {major}
               </option>
             ))}
             {/* These disabled options exist so someone can scroll 
-                    to the bottom of the list without it cuttign off*/}
+                    to the bottom of the list without it cutting off*/}
             <option disabled={true} value="NO"></option>
             <option disabled={true} value="NO"></option>
             <option disabled={true} value="NO"></option>
