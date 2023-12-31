@@ -41,10 +41,10 @@ export default function RecruiterDashboard() {
 
     axios.get("/company/id/" + companyID).then((res) => {
       setCompany(res.data);
-    });
-
-    axios.get("/queue/company/" + companyID).then((res) => {
-      setCompanyQueues(res.data);
+      const companyName = res.data.name;
+      axios.get("/queue/company/" + companyName).then((res) => {
+        setCompanyQueues(res.data);
+      });
     });
   }, [companyID]);
 
