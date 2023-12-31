@@ -19,7 +19,7 @@ export const addCompany = async (req: Request, res: Response) => {
   const { adminPin } = req.query;
 
   if (adminPin != process.env.ADMIN_PIN) {
-    return res.status(400).json("invalid admin request").send();
+    return res.status(400).send("invalid admin request");
   }
 
   try {
