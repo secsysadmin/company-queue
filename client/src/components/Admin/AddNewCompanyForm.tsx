@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card, Text, Input, Button, Stack, CardHeader } from "@chakra-ui/react";
+import { Card, Text, Input, Button, Stack, CardHeader, useToast } from "@chakra-ui/react";
 import { PIN_LENGTH } from "../../utils/consts";
 
 export default function AddNewCompanyForm() {
@@ -18,16 +18,35 @@ export default function AddNewCompanyForm() {
     }
   }, [companyName, booth, pin]);
 
-  const createNewCompany = async () => {
-    await axios.post("/company?adminPin=" + adminPin, {
-      name: companyName,
-      booth,
-      pin,
-    });
+  const toast = useToast();
 
-    setCompanyName("");
-    setBooth("");
-    setPin("");
+  const createNewCompany = async () => {
+    try {
+      await axios.post("/company?adminPin=" + adminPin, {
+        name: companyName,
+        booth,
+        pin,
+      });
+
+      setCompanyName("");
+      setBooth("");
+      setPin("");
+
+      toast({
+        title: "Company added successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to add company",
+        description: "Please check your inputs and try again",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   return (
