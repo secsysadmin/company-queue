@@ -15,6 +15,7 @@ import {
   Button,
   Text,
   Box,
+  useToast,
 } from "@chakra-ui/react";
 
 import Banner from "../../components/Banner";
@@ -41,6 +42,8 @@ export default function QueuePage() {
 
   const [closeQueueEnabled, setCloseQueueEnabled] = useState<boolean>(false);
 
+  const toast = useToast();
+
   // manage login state
   useRecruiterLogin();
 
@@ -61,7 +64,8 @@ export default function QueuePage() {
   };
 
   const handleRemoveStudent = (ticketNumber: string) => {
-    axios
+    try {
+      axios
       .delete("/queue/mark-as-spoken-to/" + ticketNumber)
       .then(() => {
         update();
@@ -69,11 +73,28 @@ export default function QueuePage() {
       .catch((error) => {
         setErrorText(JSON.stringify(error.message));
       });
+
+      toast({
+        title: "Student removed successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to remove student",
+        description: "Please refresh or try again",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+    
   };
 
   const handleNotifyStudent = (phoneNumber: string) => {
     const params = `?companyName=${companyName}&phoneNumber=${phoneNumber}`;
-
+    try {
     axios
       .post("/queue/notify-student" + params)
       .then(() => {
@@ -82,6 +103,22 @@ export default function QueuePage() {
       .catch((error) => {
         setErrorText(JSON.stringify(error.message));
       });
+
+      toast({
+        title: "Student notified successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to notify student",
+        description: "Please refresh or try again",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   useEffect(() => {
