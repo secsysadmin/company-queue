@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input, Button, Box, Text } from "@chakra-ui/react";
+import { Input, Button, Box, Text, useToast } from "@chakra-ui/react";
 import axios from "axios";
 
 interface CloseQueueFormProps {
@@ -14,6 +14,7 @@ export default function CloseQueueForm(props: CloseQueueFormProps) {
   const [typedCompanyName, setTypedCompanyName] = useState<string>();
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true);
   const [errorText, setErrorText] = useState<string>("");
+  const toast = useToast();
 
   useEffect(() => {
     const disabled: boolean = typedCompanyName !== props.companyName;
@@ -26,7 +27,7 @@ export default function CloseQueueForm(props: CloseQueueFormProps) {
     if (props.lineNumber === undefined) {
       setErrorText("Invalid Queue");
     }
-
+    try {
     axios
       .delete(`/queue/close-queue/${props.companyName}/${props.lineNumber}`)
       .then(() => {
@@ -35,6 +36,23 @@ export default function CloseQueueForm(props: CloseQueueFormProps) {
       .catch((error) => {
         setErrorText(error.message);
       });
+
+      toast({
+        title: "Queue Closed",
+        description: "Queue has been closed",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to close queue",
+        description: "Please refresh or try again",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   if (props.enabled) {
