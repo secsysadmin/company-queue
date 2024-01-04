@@ -85,3 +85,20 @@ export const recruiterLogin = async (req: Request, res: Response) => {
 
   return res.status(200).json(company);
 };
+
+export const deleteCompany = async (req: Request, res: Response) => {
+  const companyId: string = req.params.companyId;
+
+  try {
+    const deletedCompany = await CompanyModel.findByIdAndDelete(companyId);
+
+    if (!deletedCompany) {
+      return res.status(404).json({ error: "Company not found" });
+    }
+
+    res.json({ message: "Company deleted successfully" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "An error occurred" });
+  }
+}
