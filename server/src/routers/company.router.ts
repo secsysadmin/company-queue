@@ -7,6 +7,7 @@ import {
   getCompanyByName,
   recruiterLogin,
   updateCompany,
+  deleteCompany,
 } from "../controllers/company.controller";
 
 export const companyRouter = Router();
@@ -22,3 +23,5 @@ companyRouter.post("/", addCompany);
 companyRouter.put("/id/:companyId", updateCompany);
 
 companyRouter.get("/recruiter-login", recruiterLogin);
+
+companyRouter.delete("/id/:companyId", deleteCompany);
