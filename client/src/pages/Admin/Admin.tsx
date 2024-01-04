@@ -6,14 +6,15 @@ import Banner from "../../components/Banner";
 import AddNewCompanyForm from "../../components/Admin/AddNewCompanyForm";
 import AddNewQueueForm from "../../components/Admin/AddNewQueueForm";
 import QRCodeDisplayer from "../../components/Admin/QRCodeDisplayer";
+import ViewCompanyPIN from "../../components/Admin/ViewCompanyPIN";
 
 export default function Admin() {
-  const [companies, setCompanies] = useState<{ name: string; id: string }[]>();
+  const [companies, setCompanies] = useState<{ name: string; pin: string; id: string }[]>();
 
   useEffect(() => {
     axios.get("/company").then((res) => {
       const companies = res.data.map((company: any) => {
-        return { name: company.name, id: company._id };
+        return { name: company.name, pin: company.pin, id: company._id };
       });
 
       setCompanies(companies);
@@ -43,6 +44,7 @@ export default function Admin() {
           }}
         />
         <QRCodeDisplayer companyArray={companies!} />
+        <ViewCompanyPIN companyArray={companies!} />
       </Box>
     </>
   );
@@ -50,6 +52,7 @@ export default function Admin() {
 
 const statusDivStyle = {
   marginTop: "1rem",
+  marginBottom: "4rem",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
