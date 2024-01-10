@@ -11,6 +11,7 @@ import {
   getQueueById,
   notifyStudent,
   closeQueue,
+  updatePhoneNumber,
 } from "../controllers/queue.controller";
 
 export const queueRouter = Router();
@@ -34,3 +35,5 @@ queueRouter.post("/notify-student", notifyStudent);
 queueRouter.get("/student", getQueueForStudent);
 
 queueRouter.delete("/close-queue/:companyName/:lineNumber", closeQueue);
+
+queueRouter.put("/update-phone-number/:ticketNumber", updatePhoneNumber);

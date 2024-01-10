@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 
 import {
   Stack,
@@ -38,6 +38,8 @@ export default function StudentStatus() {
   const [lineNumber, setLineNumber] = useState(0);
   const [waitTime, setWaitTime] = useState(0);
   const [name, setName] = useState("");
+  const [editPhoneNumber, setEditPhoneNumber] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   const update = () => {
     if (!phoneNumber) {
@@ -64,6 +66,33 @@ export default function StudentStatus() {
       update();
     });
 
+  };
+
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+    setEditPhoneNumber("");
+  };
+
+  const savePhoneNumber = () => {
+    axios.put(`/queue/update-phone-number/${ticketNumber}`, {
+      newPhoneNumber: editPhoneNumber,
+    })
+    .then(() => {
+      setIsEditing(false);
+
+      navigate({
+        pathname: "/student/status",
+        search: createSearchParams({
+          major,
+          companyName,
+          ticketNumber,
+          phoneNumber: editPhoneNumber,
+        }).toString(),
+      });
+    })
+    .catch((error) => {
+      console.error("Error updating phone number:", error);
+      });
   };
 
   useEffect(() => {
@@ -121,6 +150,33 @@ export default function StudentStatus() {
                 <Heading size={"sm"} color={"red.900"}>
                   Phone Number
                 </Heading>
+                {isEditing ? (
+                  <Stack>
+                    <Heading size={"sm"} color={"red.900"}>
+                      Edit Phone Number
+                    </Heading>
+                    <input
+                      type="text"
+                      value={editPhoneNumber}
+                      onChange={(e) => setEditPhoneNumber(e.target.value)}
+                    />
+                    <Button
+                      onClick={savePhoneNumber}
+                      backgroundColor={"red.900"}
+                      color={"white"}
+                    >
+                      Save
+                    </Button>
+                  </Stack>
+                ) : (
+                  <Button
+                    onClick={toggleEdit}
+                    backgroundColor={"red.900"}
+                    color={"white"}
+                  >
+                    Edit
+                  </Button>
+                )}
                 <Text
                   fontSize={"md"}
                   backgroundColor={"gray.200"}

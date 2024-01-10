@@ -326,3 +326,30 @@ export const closeQueue = async (req: Request, res: Response) => {
       return res.status(500).send("could not close queue");
     });
 };
+
+export const updatePhoneNumber = async (req: Request, res: Response) => {
+  const { ticketNumber } = req.params;
+  const { newPhoneNumber } = req.body;
+
+  try {
+    const queue = await QueueModel.findOne({
+      "studentsInLine.ticketNumber": ticketNumber,
+  });
+
+  if (!queue) {
+    return res.status(404).send("Student not found in any company queue.");
+  }
+
+  queue.studentsInLine.forEach((student) => {
+    if (student.ticketNumber === ticketNumber) {
+      student.phoneNumber = newPhoneNumber;
+    }
+  });
+
+  await queue.save();
+
+  return res.status(200).send("Phone number updated successfully");
+} catch (error) {
+  return res.status(500).send("Could not update phone number");
+}
+};
