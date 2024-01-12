@@ -7,6 +7,7 @@ import AddNewCompanyForm from "../../components/Admin/AddNewCompanyForm";
 import AddNewQueueForm from "../../components/Admin/AddNewQueueForm";
 import QRCodeDisplayer from "../../components/Admin/QRCodeDisplayer";
 import ViewCompanyPIN from "../../components/Admin/ViewCompanyPIN";
+import RemoveCompanyForm from "../../components/Admin/RemoveCompany";
 
 export default function Admin() {
   const [companies, setCompanies] = useState<{ name: string; pin: string; id: string }[]>();
@@ -43,7 +44,32 @@ export default function Admin() {
             width: "50vw",
           }}
         />
+        <hr
+          style={{
+            marginTop: "10px",
+            borderColor: "white",
+            borderTopWidth: "50px",
+            width: "50vw",
+          }}
+        />
+        <RemoveCompanyForm companyArray={companies!} />
+        <hr
+          style={{
+            marginTop: "10px",
+            borderColor: "white",
+            borderTopWidth: "50px",
+            width: "50vw",
+          }}
+        />
         <QRCodeDisplayer companyArray={companies!} />
+        <hr
+          style={{
+            marginTop: "10px",
+            borderColor: "white",
+            borderTopWidth: "50px",
+            width: "50vw",
+          }}
+        />
         <ViewCompanyPIN companyArray={companies!} />
       </Box>
     </>
