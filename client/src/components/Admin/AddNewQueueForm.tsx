@@ -8,6 +8,7 @@ import {
   CardHeader,
   Select,
   Checkbox,
+  useToast,
 } from "@chakra-ui/react";
 import { Major } from "../../utils/interfaces";
 import axios from "axios";
@@ -22,6 +23,8 @@ export default function AddNewQueueForm(props: NewQueueProps) {
   const [majors, setMajors] = useState<Major[]>([]);
   const [adminPin, setAdminPin] = useState<string>();
 
+  const toast = useToast();
+
   const handleMajorChange = (checked: boolean, major: Major) => {
     if (checked) {
       setMajors((prevMajors) => [...prevMajors, major]);
@@ -32,15 +35,31 @@ export default function AddNewQueueForm(props: NewQueueProps) {
 
   async function submit() {
     const companyObj = JSON.parse(company);
+    try {
+      await axios.post("/queue", {
+        majors,
+        adminPin,
+        companyName: companyObj.name,
+        companyID: companyObj.id,
+        lineNumber,
+      });
 
-    await axios.post("/queue", {
-      majors,
-      adminPin,
-      companyName: companyObj.name,
-      companyID: companyObj.id,
-      lineNumber,
-    });
-  }
+      toast({
+        title: "Queue added successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to add queue",
+        description: "Please check your inputs and try again",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <div>
