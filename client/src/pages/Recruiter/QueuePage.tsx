@@ -172,7 +172,7 @@ export default function QueuePage() {
                     <Tr>
                       <Th style={tableCellStyle}>#</Th>
                       <Th style={tableCellStyle}>Major</Th>
-                      <Th style={tableCellStyle}>Code</Th>
+                      <Th style={tableCellStyle}>Ticket</Th>
                       <Th style={tableCellStyle}>Notify</Th>
                       <Th style={tableCellStyle}>Remove</Th>
                     </Tr>
