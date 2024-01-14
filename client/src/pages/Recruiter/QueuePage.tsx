@@ -63,6 +63,14 @@ export default function QueuePage() {
       });
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      update();
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const handleRemoveStudent = (ticketNumber: string) => {
     try {
       axios
