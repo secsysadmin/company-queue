@@ -66,10 +66,52 @@ export default function QueuePage() {
   useEffect(() => {
     const interval = setInterval(() => {
       update();
+
+      queue?.studentsInLine.forEach((student) => {
+        autoRemoveStudent(student.ticketNumber);
+      });
     }, 15000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [queue]);
+
+  const autoRemoveStudent = (ticketNumber: string) => {
+    try {
+      const studentToRemove = queue?.studentsInLine.find(
+        (student) => student.ticketNumber === ticketNumber
+      );
+
+      if (studentToRemove) {
+        const notifiedAt = new Date(studentToRemove.notifiedAt).getTime();
+        const currentTime = new Date().getTime();
+
+        // Calculate the time difference in milliseconds
+        const timeDifference = currentTime - notifiedAt;
+
+        // Check if the time difference is greater than 10 minutes (600000 milliseconds)
+        if (timeDifference > 600000 && studentToRemove.notifiedAt) {
+          axios
+            .delete("/queue/mark-as-spoken-to/" + ticketNumber)
+            .then(() => {
+              update();
+            })
+            .catch((error) => {
+              setErrorText(JSON.stringify(error.message));
+            });
+        } else {
+          return;
+        }
+      }
+    } catch (error) {
+      toast({
+        title: "Auto remove failed",
+        description: "Please refresh or try again",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   const handleRemoveStudent = (ticketNumber: string) => {
     try {
