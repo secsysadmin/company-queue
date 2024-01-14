@@ -66,13 +66,13 @@ export default function QueuePage() {
   const handleRemoveStudent = (ticketNumber: string) => {
     try {
       axios
-      .delete("/queue/mark-as-spoken-to/" + ticketNumber)
-      .then(() => {
-        update();
-      })
-      .catch((error) => {
-        setErrorText(JSON.stringify(error.message));
-      });
+        .delete("/queue/mark-as-spoken-to/" + ticketNumber)
+        .then(() => {
+          update();
+        })
+        .catch((error) => {
+          setErrorText(JSON.stringify(error.message));
+        });
 
       toast({
         title: "Student removed successfully",
@@ -89,20 +89,20 @@ export default function QueuePage() {
         isClosable: true,
       });
     }
-    
+
   };
 
   const handleNotifyStudent = (phoneNumber: string) => {
     const params = `?companyName=${companyName}&phoneNumber=${phoneNumber}`;
     try {
-    axios
-      .post("/queue/notify-student" + params)
-      .then(() => {
-        update();
-      })
-      .catch((error) => {
-        setErrorText(JSON.stringify(error.message));
-      });
+      axios
+        .post("/queue/notify-student" + params)
+        .then(() => {
+          update();
+        })
+        .catch((error) => {
+          setErrorText(JSON.stringify(error.message));
+        });
 
       toast({
         title: "Student notified successfully",
@@ -144,7 +144,20 @@ export default function QueuePage() {
           <Card backgroundColor={"blackAlpha.100"}>
             <CardHeader>
               <Heading size={"md"}>
-                {queue?.majors.join(", ")} Line
+
+                {queue?.majors.map((major, index) => (
+                  <span key={index}>
+                    {majorAbbreviations[major]}
+                    {index < queue.majors.length - 1 && ", "}
+                  </span>
+                ))}, MISC Line
+
+
+                <Box style={{ clear: "both" }}>
+                  <Text fontSize={"xs"}>
+                    <br />
+                  </Text>
+                </Box>
                 <div style={{ float: "right" }}>
                   <Button
                     colorScheme="red"
@@ -211,4 +224,29 @@ const statusDivStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
+};
+
+
+const majorAbbreviations = {
+  "Aerospace Engineering": "AERO",
+  "Architectural Engineering": "AREN",
+  "Biological and Agricultural Engineering": "BAEN",
+  "Biomedical Engineering": "BMEN",
+  "Chemical Engineering": "CHEN",
+  "Computer Science": "CPSC",
+  "Computer Engineering": "CPEN",
+  "Civil Engineering": "CVEN",
+  "Electrical Engineering": "ELEN",
+  "Electronic Systems Engineering Technology": "ESET",
+  "Environmental Engineering": "EVEN",
+  "Industrial Distribution": "IDIS",
+  "Industrial and Systems Engineering": "ISEN",
+  "Mechanical Engineering": "MEEN",
+  "Manufacturing and Mechanical Engineering Technology": "MMET",
+  "Materials Science and Engineering": "MSEN",
+  "Multidisciplinary Technology": "MXET",
+  "Nuclear Engineering": "NUEN",
+  "Ocean Engineering": "OCEN",
+  "Petroleum Engineering": "PETE",
+  "Other": "MISC",
 };
