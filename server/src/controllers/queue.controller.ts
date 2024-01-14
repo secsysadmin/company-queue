@@ -19,7 +19,7 @@ const sendMessageToStudent = (
   );
 
   twilio.messages.create({
-    body: `It is now your turn in ${companyName}'s line at booth ${companyBooth}. Your ticket number is ${ticketNumber}`,
+    body: `It is now your turn in ${companyName}'s line at booth ${companyBooth}. Your ticket number is ${ticketNumber}. You have 10 minutes before you will be automatically removed from the queue.`,
     from: "+18559314118",
     to: "+1" + phoneNumber,
   });
