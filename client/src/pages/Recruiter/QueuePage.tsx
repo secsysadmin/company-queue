@@ -63,16 +63,66 @@ export default function QueuePage() {
       });
   };
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      update();
+
+      queue?.studentsInLine.forEach((student) => {
+        autoRemoveStudent(student.ticketNumber);
+      });
+    }, 15000);
+
+    return () => clearInterval(interval);
+  }, [queue]);
+
+  const autoRemoveStudent = (ticketNumber: string) => {
+    try {
+      const studentToRemove = queue?.studentsInLine.find(
+        (student) => student.ticketNumber === ticketNumber
+      );
+
+      if (studentToRemove) {
+        const notifiedAt = new Date(studentToRemove.notifiedAt).getTime();
+        const currentTime = new Date().getTime();
+
+        // Calculate the time difference in milliseconds
+        const timeDifference = currentTime - notifiedAt;
+
+        // Check if the time difference is greater than 10 minutes (600000 milliseconds)
+        if (timeDifference > 600000 && studentToRemove.notifiedAt) {
+          axios
+            .delete("/queue/mark-as-spoken-to/" + ticketNumber)
+            .then(() => {
+              update();
+            })
+            .catch((error) => {
+              setErrorText(JSON.stringify(error.message));
+            });
+        } else {
+          return;
+        }
+      }
+    } catch (error) {
+      toast({
+        title: "Auto remove failed",
+        description: "Please refresh or try again",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
+
   const handleRemoveStudent = (ticketNumber: string) => {
     try {
       axios
-      .delete("/queue/mark-as-spoken-to/" + ticketNumber)
-      .then(() => {
-        update();
-      })
-      .catch((error) => {
-        setErrorText(JSON.stringify(error.message));
-      });
+        .delete("/queue/mark-as-spoken-to/" + ticketNumber)
+        .then(() => {
+          update();
+        })
+        .catch((error) => {
+          setErrorText(JSON.stringify(error.message));
+        });
 
       toast({
         title: "Student removed successfully",
@@ -89,20 +139,20 @@ export default function QueuePage() {
         isClosable: true,
       });
     }
-    
+
   };
 
   const handleNotifyStudent = (phoneNumber: string) => {
     const params = `?companyName=${companyName}&phoneNumber=${phoneNumber}`;
     try {
-    axios
-      .post("/queue/notify-student" + params)
-      .then(() => {
-        update();
-      })
-      .catch((error) => {
-        setErrorText(JSON.stringify(error.message));
-      });
+      axios
+        .post("/queue/notify-student" + params)
+        .then(() => {
+          update();
+        })
+        .catch((error) => {
+          setErrorText(JSON.stringify(error.message));
+        });
 
       toast({
         title: "Student notified successfully",
@@ -144,7 +194,20 @@ export default function QueuePage() {
           <Card backgroundColor={"blackAlpha.100"}>
             <CardHeader>
               <Heading size={"md"}>
-                {queue?.majors.join(", ")} Line
+
+                {queue?.majors.map((major, index) => (
+                  <span key={index}>
+                    {majorAbbreviations[major]}
+                    {index < queue.majors.length - 1 && ", "}
+                  </span>
+                ))}, MISC Line
+
+
+                <Box style={{ clear: "both" }}>
+                  <Text fontSize={"xs"}>
+                    <br />
+                  </Text>
+                </Box>
                 <div style={{ float: "right" }}>
                   <Button
                     colorScheme="red"
@@ -172,7 +235,7 @@ export default function QueuePage() {
                     <Tr>
                       <Th style={tableCellStyle}>#</Th>
                       <Th style={tableCellStyle}>Major</Th>
-                      <Th style={tableCellStyle}>Code</Th>
+                      <Th style={tableCellStyle}>Ticket</Th>
                       <Th style={tableCellStyle}>Notify</Th>
                       <Th style={tableCellStyle}>Remove</Th>
                     </Tr>
@@ -211,4 +274,29 @@ const statusDivStyle = {
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
+};
+
+
+const majorAbbreviations = {
+  "Aerospace Engineering": "AERO",
+  "Architectural Engineering": "AREN",
+  "Biological and Agricultural Engineering": "BAEN",
+  "Biomedical Engineering": "BMEN",
+  "Chemical Engineering": "CHEN",
+  "Computer Science": "CPSC",
+  "Computer Engineering": "CPEN",
+  "Civil Engineering": "CVEN",
+  "Electrical Engineering": "ELEN",
+  "Electronic Systems Engineering Technology": "ESET",
+  "Environmental Engineering": "EVEN",
+  "Industrial Distribution": "IDIS",
+  "Industrial and Systems Engineering": "ISEN",
+  "Mechanical Engineering": "MEEN",
+  "Manufacturing and Mechanical Engineering Technology": "MMET",
+  "Materials Science and Engineering": "MSEN",
+  "Multidisciplinary Technology": "MXET",
+  "Nuclear Engineering": "NUEN",
+  "Ocean Engineering": "OCEN",
+  "Petroleum Engineering": "PETE",
+  "Other": "MISC",
 };

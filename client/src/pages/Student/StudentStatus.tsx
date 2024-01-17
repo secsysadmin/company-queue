@@ -231,7 +231,7 @@ export default function StudentStatus() {
                 </Text>
 
                 <Heading size={"sm"} color={"red.900"}>
-                  Exit Code
+                  Ticket Number
                 </Heading>
                 <Text
                   fontSize={"md"}
