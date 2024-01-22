@@ -15,6 +15,7 @@ import StudentJoinQueue from "../pages/Student/StudentJoinQueue";
 import StudentStatus from "../pages/Student/StudentStatus";
 
 import Admin from "../pages/Admin/Admin";
+import AdminLogin from "../pages/Admin/AdminLogin";
 
 export const router = createBrowserRouter(
   createRoutesFromElements(
@@ -29,7 +30,10 @@ export const router = createBrowserRouter(
         <Route path="status" element={<StudentStatus />}></Route>
         <Route path="landing" element={<StudentLandingPage />}></Route>
       </Route>
-      <Route path="admin" element={<Admin />} />
+      <Route path="admin">
+        <Route path="login" element={<AdminLogin />}></Route>
+        <Route path="dashboard" element={<Admin />}></Route>
+      </Route>
     </Route>
   )
 );
