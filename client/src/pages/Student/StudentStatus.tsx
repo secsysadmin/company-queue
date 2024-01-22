@@ -77,21 +77,21 @@ export default function StudentStatus() {
     axios.put(`/queue/update-phone-number/${ticketNumber}`, {
       newPhoneNumber: editPhoneNumber,
     })
-    .then(() => {
-      setIsEditing(false);
+      .then(() => {
+        setIsEditing(false);
 
-      navigate({
-        pathname: "/student/status",
-        search: createSearchParams({
-          major,
-          companyName,
-          ticketNumber,
-          phoneNumber: editPhoneNumber,
-        }).toString(),
-      });
-    })
-    .catch((error) => {
-      console.error("Error updating phone number:", error);
+        navigate({
+          pathname: "/student/status",
+          search: createSearchParams({
+            major,
+            companyName,
+            ticketNumber,
+            phoneNumber: editPhoneNumber,
+          }).toString(),
+        });
+      })
+      .catch((error) => {
+        console.error("Error updating phone number:", error);
       });
   };
 
@@ -121,9 +121,16 @@ export default function StudentStatus() {
             borderRadius="md"
             marginTop="4"
           >
+            <Card backgroundColor={"gray.100"} shadow={"none"} textAlign={"left"}>
+            <Heading color={"black"} size={"md"}>
+              Information:
+            </Heading>
             <Text fontSize="md">
-              If your wait time permits, feel free to talk to other companies while you wait.
+              <li>Please <b>do not stand in line</b> until you have been texted</li>
+              <li>If your wait time permits, feel free to talk to other companies while you wait.</li>
+              <li>Refresh for updated wait time</li>
             </Text>
+            </Card>
           </Box>
           <Card backgroundColor={"gray.100"}>
             <CardHeader>
@@ -203,7 +210,7 @@ export default function StudentStatus() {
                 </Text>
 
                 <Heading size={"sm"} color={"red.900"}>
-                  Line Number
+                  Your Line
                 </Heading>
                 <Text
                   fontSize={"md"}
@@ -213,7 +220,7 @@ export default function StudentStatus() {
                   textAlign={"center"}
                   color={"black"}
                 >
-                  {lineNumber}
+                  Line {lineNumber}
                 </Text>
 
                 <Heading size={"sm"} color={"red.900"}>
@@ -227,7 +234,7 @@ export default function StudentStatus() {
                   textAlign={"center"}
                   color={"black"}
                 >
-                  {Math.floor(waitTime / 1000 / 60)} minutes
+                  {(waitTime)} minutes
                 </Text>
 
                 <Heading size={"sm"} color={"red.900"}>
