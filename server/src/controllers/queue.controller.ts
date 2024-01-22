@@ -25,6 +25,23 @@ const sendMessageToStudent = (
   });
 };
 
+const sendQueueClosedMessage = (
+  phoneNumber: string,
+  companyName: string,
+  ticketNumber: string
+) => {
+  const twilio = new Twilio(
+    process.env.TWILIO_SID,
+    process.env.TWILIO_AUTH_TOKEN
+  );
+
+  twilio.messages.create({
+    body: `${companyName}'s line has been closed, you are no longer in line. They may be leaving or switching to an in-person queue.`,
+    from: "+18559314118",
+    to: "+1" + phoneNumber,
+  });
+};
+
 export const joinQueue = async (req: Request, res: Response) => {
   const { companyName, major, phoneNumber, name } = req.body;
 
@@ -318,13 +335,32 @@ export const getQueueById = async (req: Request, res: Response) => {
 export const closeQueue = async (req: Request, res: Response) => {
   const { companyName, lineNumber } = req.params;
 
-  QueueModel.findOneAndDelete({ companyName, lineNumber })
-    .then(() => {
-      return res.status(200).send();
-    })
-    .catch(() => {
-      return res.status(500).send("could not close queue");
+  try {
+    const closedQueue = await QueueModel.findOne({
+      companyName,
+      lineNumber,
     });
+
+    if (!closedQueue) {
+      return res.status(404).send("Queue not found");
+    }
+
+    // Send notification to all students in the closed queue
+    closedQueue.studentsInLine.forEach((student) => {
+      sendQueueClosedMessage(
+        student.phoneNumber,
+        companyName,
+        student.ticketNumber
+      );
+    });
+
+    // Delete the queue after sending notifications
+    await QueueModel.deleteOne({ _id: closedQueue._id });
+
+    return res.status(200).send();
+  } catch (error) {
+    return res.status(500).send("Could not close queue");
+  }
 };
 
 export const updatePhoneNumber = async (req: Request, res: Response) => {
