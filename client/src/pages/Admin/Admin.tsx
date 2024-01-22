@@ -8,10 +8,12 @@ import AddNewQueueForm from "../../components/Admin/AddNewQueueForm";
 import QRCodeDisplayer from "../../components/Admin/QRCodeDisplayer";
 import ViewCompanyPIN from "../../components/Admin/ViewCompanyPIN";
 import RemoveCompanyForm from "../../components/Admin/RemoveCompany";
+import useAdminLogin from "../../utils/useAdminLogin";
 
 export default function Admin() {
   const [companies, setCompanies] = useState<{ name: string; pin: string; id: string }[]>();
-
+  useAdminLogin();
+  
   useEffect(() => {
     axios.get("/company").then((res) => {
       const companies = res.data.map((company: any) => {
