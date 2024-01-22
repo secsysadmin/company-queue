@@ -104,7 +104,7 @@ export const joinQueue = async (req: Request, res: Response) => {
     { new: true }
   );
 
-  const waitTime = await getWaitTime(correctQueue._id.toString());
+  const waitTime = await getWaitTime(correctQueue._id.toString(), phoneNumber);
 
   const numberOfStudentsInLine = correctQueue.studentsInLine.length;
 
@@ -287,7 +287,7 @@ export const getQueueForStudent = async (req: Request, res: Response) => {
     ticketNumber: student?.ticketNumber,
     waitTime: await getWaitTime(
       queue._id.toString(),
-      student.joinedAt.getTime()
+      student.phoneNumber
     ),
     major: student.major,
     name: student.name,

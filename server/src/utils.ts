@@ -12,18 +12,23 @@ export const getRandomTicketNumber = () => {
   return ticketNumber;
 };
 
-export const getWaitTime = async (queueId: string, joinedAt?: number) => {
+export const getWaitTime = async (queueId: string, studentPhoneNumber: string) => {
   const queue = await QueueModel.findById(queueId);
 
   if (queue === null) {
     return;
   }
 
-  const sortedStudents = queue.studentsInLine.sort((student1, student2) => {
-    return student1.joinedAt.getTime() - student2.joinedAt.getTime();
-  });
+  const student = queue.studentsInLine.find(student => student.phoneNumber === studentPhoneNumber);
 
-  const earliestStudent = sortedStudents[0] ?? { joinedAt: new Date() };
+  if (!student) {
+    // Student not found in the queue
+    return;
+  }
 
-  return (joinedAt ?? Date.now()) - earliestStudent.joinedAt.getTime();
+  const studentIndex = queue.studentsInLine.indexOf(student);
+  const numStudentsAhead = studentIndex;
+  const waitTimeMultiplier = numStudentsAhead * 4;
+
+  return waitTimeMultiplier;
 };
