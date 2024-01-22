@@ -7,6 +7,7 @@ enum Major {
   CPSC = "Computer Science",
   CPEN = "Computer Engineering",
   CVEN = "Civil Engineering",
+  DAEN = "Data Engineering",
   ELEN = "Electrical Engineering",
   ESET = "Electronic Systems Engineering Technology",
   EVEN = "Environmental Engineering",

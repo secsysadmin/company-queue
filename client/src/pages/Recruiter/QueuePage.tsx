@@ -286,6 +286,7 @@ const majorAbbreviations = {
   "Computer Science": "CPSC",
   "Computer Engineering": "CPEN",
   "Civil Engineering": "CVEN",
+  "Data Engineering": "DAEN",
   "Electrical Engineering": "ELEN",
   "Electronic Systems Engineering Technology": "ESET",
   "Environmental Engineering": "EVEN",
