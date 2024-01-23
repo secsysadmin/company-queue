@@ -9,7 +9,7 @@ export default function AdminLogin() {
     deleteCookie("adminID");
 
     const [adminPin, setAdminPin] = useState("");
-    const [errorText, setErrorText] = useState<String>();
+    const [errorText, setErrorText] = useState<string>();
     const navigate = useNavigate();
 
     const login = async () => {

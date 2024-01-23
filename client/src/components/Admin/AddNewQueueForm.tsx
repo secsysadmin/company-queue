@@ -59,7 +59,7 @@ export default function AddNewQueueForm(props: NewQueueProps) {
         isClosable: true,
       });
     }
-  };
+  }
 
   return (
     <div>

@@ -8,30 +8,37 @@ import path from "path";
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(express.json());
-app.use(cors());
+try {
+  app.use(express.json());
+  app.use(cors());
 
-app.use((req, res, next) => {
-  res.set("Cache-Control", "no-store");
-  next();
-});
+  app.use((req, res, next) => {
+    res.set("Cache-Control", "no-store");
+    next();
+  });
 
-app.use("/api", router);
+  app.use("/api", router);
 
-const extraPath = process.env.PROD ? "../" : "";
-const pathToClentBuild = path.join(__dirname, extraPath + "../../client/dist");
+  const extraPath = process.env.PROD ? "../" : "";
+  const pathToClentBuild = path.join(
+    __dirname,
+    extraPath + "../../client/dist"
+  );
 
-app.use(
-  express.static(pathToClentBuild, {
-    extensions: ["html", "js", "mjs"],
-  })
-);
+  app.use(
+    express.static(pathToClentBuild, {
+      extensions: ["html", "js", "mjs"],
+    })
+  );
 
-app.get("*", (_, res) => {
-  res.sendFile(path.join(pathToClentBuild, "index.html"));
-});
+  app.get("*", (_, res) => {
+    res.sendFile(path.join(pathToClentBuild, "index.html"));
+  });
 
-app.listen(port, async () => {
-  await connectToDatabase();
-  console.log(`[Server]: I am running at https://localhost:${port}`);
-});
+  app.listen(port, async () => {
+    await connectToDatabase();
+    console.log(`[Server]: I am running at https://localhost:${port}`);
+  });
+} catch (e) {
+  console.error("server error. trying again");
+}

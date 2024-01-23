@@ -16,6 +16,7 @@ export default function Admin() {
   
   useEffect(() => {
     axios.get("/company").then((res) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const companies = res.data.map((company: any) => {
         return { name: company.name, pin: company.pin, id: company._id };
       });
