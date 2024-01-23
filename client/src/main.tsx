@@ -11,8 +11,8 @@ import { router } from "./routes/router";
 
 import LocationRestrictor from "./components/LocationRestrictor";
 
-const targetLocation = { latitude: 33.03, longitude: -97.08 };
-const radius = 5000;
+const targetLocation = { latitude: 30.3623, longitude: -96.3651 };
+const radius = 1500;
 
 axios.defaults.baseURL = import.meta.env.PROD
   ? "/api"
