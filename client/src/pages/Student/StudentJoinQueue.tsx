@@ -105,10 +105,9 @@ export default function StudentJoinQueue() {
             fontWeight="semibold"
             onChange={(ev) => setPhoneNumber(ev.target.value)}
           ></Input>
-          <Select
+          <select
             placeholder="Major"
-            variant="filled"
-            fontWeight="semibold"
+            style={{ backgroundColor: '#d3d3d3' }}
             onChange={(ev) => setMajor(ev.target.value as Major)}
           >
             {majorOptions.map((major, index) => (
@@ -121,7 +120,7 @@ export default function StudentJoinQueue() {
             <option disabled={true} value="NO"></option>
             <option disabled={true} value="NO"></option>
             <option disabled={true} value="NO"></option>
-          </Select>
+          </select>
           <Button
             onClick={() =>
               joinQueue(phoneNumber, major as Major, company!, name!)
