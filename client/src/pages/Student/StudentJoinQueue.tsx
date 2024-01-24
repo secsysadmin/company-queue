@@ -71,7 +71,7 @@ export default function StudentJoinQueue() {
         });
       })
       .catch((error) => {
-        setErrorMessage(JSON.stringify(error));
+        setErrorMessage(JSON.stringify(error.response.data));
       });
   }
 
@@ -93,6 +93,9 @@ export default function StudentJoinQueue() {
             </Text>
             Queue
           </Heading>
+          <Text fontSize="md" textAlign="center">
+            If you are already in a queue, you will not be able to join another until you leave.
+          </Text>
           <Input
             placeholder="Name"
             variant="filled"
