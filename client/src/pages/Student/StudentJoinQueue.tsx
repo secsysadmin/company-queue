@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { createSearchParams, useLocation, useNavigate } from "react-router-dom";
 import {
   Input,
-  Select,
   Button,
   Stack,
   Text,
