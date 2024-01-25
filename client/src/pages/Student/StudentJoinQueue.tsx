@@ -58,10 +58,12 @@ export default function StudentJoinQueue() {
         name,
       })
       .then((res) => {
+        return {ticketNumber: res.data.ticketNumber};
+      }).then((data) =>{
         const searchParams = {
           major,
           companyName,
-          ticketNumber: res.data.ticketNumber,
+          ticketNumber: data.ticketNumber,
           phoneNumber,
         };
         navigate({
