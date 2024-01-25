@@ -114,14 +114,14 @@ export default function StudentJoinQueue() {
             style={{ backgroundColor: '#d3d3d3' }}
             onChange={(ev) => setMajor(ev.target.value as Major)}
           >
-            {majorOptions.map((major, index) => (
+            {[...majorOptions].reverse().map((major, index) => (
               <option value={major} key={index}>
                 {major}
               </option>
             ))}
             {/* These disabled options exist so someone can scroll 
                     to the bottom of the list without it cutting off*/}
-            <option disabled={true} value="NO" selected={true}></option>
+            <option disabled={true} value="NO"></option>
             <option disabled={true} value="NO"></option>
             <option disabled={true} value="NO"></option>
           </select>
