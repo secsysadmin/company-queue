@@ -58,8 +58,8 @@ export default function StudentJoinQueue() {
         name,
       })
       .then((res) => {
-        return {ticketNumber: res.data.ticketNumber};
-      }).then((data) =>{
+        return { ticketNumber: res.data.ticketNumber };
+      }).then((data) => {
         const searchParams = {
           major,
           companyName,
@@ -121,7 +121,7 @@ export default function StudentJoinQueue() {
             ))}
             {/* These disabled options exist so someone can scroll 
                     to the bottom of the list without it cutting off*/}
-            <option disabled={true} value="NO"></option>
+            <option disabled={true} value="NO" selected={true}></option>
             <option disabled={true} value="NO"></option>
             <option disabled={true} value="NO"></option>
           </select>
