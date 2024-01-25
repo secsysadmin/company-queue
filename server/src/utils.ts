@@ -28,7 +28,7 @@ export const getWaitTime = async (queueId: string, studentPhoneNumber: string) =
 
   const studentIndex = queue.studentsInLine.indexOf(student);
   const numStudentsAhead = studentIndex;
-  const waitTimeMultiplier = numStudentsAhead * 4;
+  const waitTimeMultiplier = numStudentsAhead + 1;
 
   return waitTimeMultiplier;
 };

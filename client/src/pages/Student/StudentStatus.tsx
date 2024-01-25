@@ -224,7 +224,7 @@ export default function StudentStatus() {
                 </Text>
 
                 <Heading size={"sm"} color={"red.900"}>
-                  Wait Time
+                  Students Ahead of You
                 </Heading>
                 <Text
                   fontSize={"md"}
@@ -234,7 +234,7 @@ export default function StudentStatus() {
                   textAlign={"center"}
                   color={"black"}
                 >
-                  {(waitTime)} minutes
+                  {(waitTime)}
                 </Text>
 
                 <Heading size={"sm"} color={"red.900"}>
