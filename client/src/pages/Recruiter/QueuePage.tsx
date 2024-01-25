@@ -59,7 +59,7 @@ export default function QueuePage() {
         setQueue(res.data);
       })
       .catch((error) => {
-        setErrorText(JSON.stringify(error));
+        setErrorText(JSON.stringify(error.response.data));
       });
   };
 
@@ -96,7 +96,7 @@ export default function QueuePage() {
               update();
             })
             .catch((error) => {
-              setErrorText(JSON.stringify(error.message));
+              setErrorText(JSON.stringify(error.response.data));
             });
         } else {
           return;
@@ -121,7 +121,7 @@ export default function QueuePage() {
           update();
         })
         .catch((error) => {
-          setErrorText(JSON.stringify(error.message));
+          setErrorText(JSON.stringify(error.response.data));
         });
 
       toast({
@@ -151,7 +151,7 @@ export default function QueuePage() {
           update();
         })
         .catch((error) => {
-          setErrorText(JSON.stringify(error.message));
+          setErrorText(JSON.stringify(error.response.data));
         });
 
       toast({

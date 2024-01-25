@@ -34,7 +34,7 @@ export default function CloseQueueForm(props: CloseQueueFormProps) {
         navigate("/recruiter/dashboard");
       })
       .catch((error) => {
-        setErrorText(error.message);
+        setErrorText(error.response.data);
       });
 
       toast({

@@ -23,7 +23,7 @@ export default function RecruiterLogin() {
         navigate("/recruiter/dashboard");
       })
       .catch((error) => {
-        setErrorText(JSON.stringify(error));
+        setErrorText(JSON.stringify(error.response.data));
       });
   };
 

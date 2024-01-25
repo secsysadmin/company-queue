@@ -112,6 +112,9 @@ export default function StudentJoinQueue() {
             style={{ backgroundColor: '#d3d3d3' }}
             onChange={(ev) => setMajor(ev.target.value as Major)}
           >
+            <option value="" disabled selected hidden>
+              Major
+            </option>
             {majorOptions.map((major, index) => (
               <option value={major} key={index}>
                 {major}

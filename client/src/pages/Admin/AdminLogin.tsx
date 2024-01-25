@@ -21,7 +21,7 @@ export default function AdminLogin() {
                 navigate("/admin/dashboard");
             })
             .catch((error) => {
-                setErrorText(JSON.stringify(error.message));
+                setErrorText(JSON.stringify(error.response.data));
             });
     };
 
