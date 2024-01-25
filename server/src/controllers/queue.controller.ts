@@ -119,28 +119,46 @@ export const leaveQueue = async (req: Request, res: Response) => {
   const queue = await QueueModel.findOne({
     "studentsInLine.ticketNumber": ticketNumber,
   });
+  console.log("passed student search")
 
   // If the company queue is not found, the student is not in any company queue
   if (!queue) {
+    console.log("queue not found")
     return res
       .status(404)
       .json({ message: "Student not found in any company queue." });
   }
+  console.log("passed queue search")
 
   const studentIndex = queue.studentsInLine.findIndex(
     (student) => student.ticketNumber === ticketNumber
   );
+  console.log("passed student index search");
 
   // remove student
   queue.studentsInLine.splice(studentIndex, 1);
+  console.log("student removed")
 
-  await queue.save();
+  try {
+    await queue.save();
+    console.log("queue saved")
+  }
+  catch {
+    return res.status(404).send("Could not leave queue");
+  }
+  
 
   return res.status(200).send();
 };
 
 export const spokenTo = async (req: Request, res: Response) => {
-  leaveQueue(req, res);
+  try {
+   leaveQueue(req, res); 
+  }
+  catch {
+    return res.status(404).send("Could not mark as spoken to");
+  }
+  
 };
 
 export const notifyNext = async (req: Request, res: Response) => {
